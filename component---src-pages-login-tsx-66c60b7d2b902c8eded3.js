@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunklida=self.webpackChunklida||[]).push([[47],{2493:function(e,n,t){t.r(n);var l=t(7294),a=t(2445),u=t(1146);n.default=function(){return l.createElement(a.Z,{title:"Sign In",showHeader:!1},l.createElement(u.Z,null))}}}]);
-//# sourceMappingURL=component---src-pages-login-tsx-66c60b7d2b902c8eded3.js.map
