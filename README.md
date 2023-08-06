@@ -5,6 +5,8 @@
 
 LIDA uses off-the-shelf large language models to generate grammar-agnostic visualization specifications and data-faithful infographics.
 
+> **Important Note**: To generate visualizations, LIDA _generates_ and _executes_ code. Ensure that you run LIDA in a secure environment.
+
 ## How it works
 
 LIDA comprises of 4 modules - A SUMMARIZER that converts data into a rich but compact natural language summary, a GOAL EXPLORER that enumerates visualization goals given the data, a VISGENERATOR that generates, refines, executes and filters visualization code and an INFOGRAPHER module that yields data-faithful stylized graphics using IGMs. LIDA provides a python api, and a hybrid user interface (direct manipulation and **multilingual** natural language) for interactive chart, infographics and data story generation.

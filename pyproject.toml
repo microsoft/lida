@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Lida" 
+authors = [
+  { name="Victor Dibia", email="victordibia@microsoft.com" },
+]
+description = "LIDA: Automatic Generation of Visualizations from Data"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "llmx",
+    "pydantic",
+    "uvicorn", 
+    "typer",
+    "fastapi", 
+    "python-multipart", 
+     "scipy", 
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "altair", 
+    "seaborn",
+    "plotly", 
+    "plotnine",
+    "statsmodels", 
+    "networkx",
+    "geopandas",
+    "matplotlib-venn",
+    "wordcloud", 
+    "basemap",
+    "basemap-data-hires"
+]
+optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]>=4.26"], tools=["geopy"]}
+
+dynamic = ["version"]
+
+[tool.setuptools]
+include-package-data = true 
+
+[tool.setuptools.dynamic]
+version = {attr = "lida.version.VERSION"}
+readme = {file = ["README.md"]}
+
+[tool.setuptools.packages.find]  
+include = ["lida*"]  
+exclude = ["*.tests*"]  
+namespaces = false  
+
+[tool.setuptools.package-data]
+"lida" = ["*.*"]
+
+[project.urls]
+"Homepage" = "https://github.com/microsoft/lida"
+"Bug Tracker" = "https://github.com/microsoft/lida/issues"
+
+[project.scripts]
+lida = "lida.cli:run"
