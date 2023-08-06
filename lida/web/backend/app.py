@@ -1,5 +1,6 @@
 import json
 import os
+import logging
 import requests
 from fastapi import FastAPI, UploadFile
 from fastapi.staticfiles import StaticFiles
@@ -13,7 +14,7 @@ from ...modules import Manager
 
 # # instantiate model and generator
 textgen = text_generator()
-
+logger = logging.getLogger(__name__)
 
 lida = Manager(text_gen=textgen)
 app = FastAPI()
@@ -65,9 +66,9 @@ async def visualize_data(req: VisualizeWebRequest) -> dict:
                 "message": "Successfully generated charts."}
 
     except Exception as exception_error:
-
+        logger.error(f"Error generating visualization goals: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization goals: {str(exception_error)}"}
+                "message": f"Error generating visualization goals."}
 
 
 @api.post("/visualize/edit")
@@ -95,9 +96,9 @@ async def edit_visualization(req: VisualizeEditWebRequest) -> dict:
                 "message": f"Successfully edited charts."}
 
     except Exception as exception_error:
-
+        logger.error(f"Error generating visualization edits: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization goals: {str(exception_error)}"}
+                "message": f"Error generating visualization goals."}
 
 
 @api.post("/visualize/repair")
@@ -127,9 +128,9 @@ async def repair_visualization(req: VisualizeRepairWebRequest) -> dict:
                 "message": "Successfully generated chart repairs"}
 
     except Exception as exception_error:
-
+        logger.error(f"Error generating visualization repairs: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization repairs: {str(exception_error)}"}
+                "message": f"Error generating visualization repairs."}
 
 
 @api.post("/visualize/explain")
@@ -143,18 +144,13 @@ async def explain_visualization(req: VisualizeExplainWebRequest) -> dict:
                 n=1,
                 temperature=0),
             library=req.library)
-        # try:
-        #     explanations = json.loads(explanations[0])
-        # except BaseException:
-        #     print("Error parsing explanation JSON data", explanations)
-        #     return {"status": False, "message": "Error parsing explanation JSON data"}
         return {"status": True, "explanations": explanations[0],
                 "message": "Successfully generated explanations"}
 
     except Exception as exception_error:
-
+        logger.error(f"Error generating visualization explanation: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization explanation: {str(exception_error)}"}
+                "message": f"Error generating visualization explanation."}
 
 
 @api.post("/visualize/evaluate")
@@ -178,9 +174,9 @@ async def evaluate_visualization(req: VisualizeEvalWebRequest) -> dict:
                 "message": "Successfully generated evaluation"}
 
     except Exception as exception_error:
-
+        logger.error(f"Error generating visualization evaluation: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization evaluation: {str(exception_error)}"}
+                "message": f"Error generating visualization evaluation."}
 
 
 @api.post("/text/generate")
@@ -191,8 +187,8 @@ async def generate_text(textgen_config: TextGenerationConfig) -> dict:
         completions = textgen.generate(textgen_config)
         return {"status": True, "completions": completions.text}
     except Exception as exception_error:
-
-        return {"status": False, "message": f"Error generating text: {str(exception_error)}"}
+        logger.error(f"Error generating text: {str(exception_error)}")
+        return {"status": False, "message": f"Error generating text."}
 
 
 @api.post("/goal")
@@ -203,9 +199,9 @@ async def generate_goal(req: GoalWebRequest) -> dict:
         return {"status": True, "data": goals,
                 "message": f"Successfully generated {len(goals)} goals"}
     except Exception as exception_error:
-
+        logger.error(f"Error generating goals: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization goals: {str(exception_error)}"}
+                "message": f"Error generating visualization goals."}
 
 
 @api.post("/summarize")
@@ -234,8 +230,8 @@ async def upload_file(file: UploadFile):
             textgen_config=textgen_config)
         return {"status": True, "summary": summary, "data_filename": file.filename}
     except Exception as exception_error:
-
-        return {"status": False, "message": f"Error processing file: {str(exception_error) }"}
+        logger.error(f"Error processing file: {str(exception_error)}")
+        return {"status": False, "message": f"Error processing file."}
 
 
 # upload via url
@@ -257,5 +253,5 @@ def upload_file_via_url(payload: UploadUrl) -> dict:
             textgen_config=textgen_config)
         return {"status": True, "summary": summary, "data_filename": file_name}
     except Exception as exception_error:
-
-        return {"status": False, "message": f"Error processing file: {str(exception_error) }"}
+        logger.error(f"Error processing file: {str(exception_error)}")
+        return {"status": False, "message": f"Error processing file."}
