@@ -1,6 +1,5 @@
 import json
 import os
-import traceback
 import requests
 from fastapi import FastAPI, UploadFile
 from fastapi.staticfiles import StaticFiles
@@ -66,7 +65,7 @@ async def visualize_data(req: VisualizeWebRequest) -> dict:
                 "message": "Successfully generated charts."}
 
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False,
                 "message": f"Error generating visualization goals: {str(exception_error)}"}
 
@@ -96,7 +95,7 @@ async def edit_visualization(req: VisualizeEditWebRequest) -> dict:
                 "message": f"Successfully edited charts."}
 
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False,
                 "message": f"Error generating visualization goals: {str(exception_error)}"}
 
@@ -128,7 +127,7 @@ async def repair_visualization(req: VisualizeRepairWebRequest) -> dict:
                 "message": "Successfully generated chart repairs"}
 
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False,
                 "message": f"Error generating visualization repairs: {str(exception_error)}"}
 
@@ -153,7 +152,7 @@ async def explain_visualization(req: VisualizeExplainWebRequest) -> dict:
                 "message": "Successfully generated explanations"}
 
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False,
                 "message": f"Error generating visualization explanation: {str(exception_error)}"}
 
@@ -179,7 +178,7 @@ async def evaluate_visualization(req: VisualizeEvalWebRequest) -> dict:
                 "message": "Successfully generated evaluation"}
 
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False,
                 "message": f"Error generating visualization evaluation: {str(exception_error)}"}
 
@@ -192,7 +191,7 @@ async def generate_text(textgen_config: TextGenerationConfig) -> dict:
         completions = textgen.generate(textgen_config)
         return {"status": True, "completions": completions.text}
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False, "message": f"Error generating text: {str(exception_error)}"}
 
 
@@ -204,7 +203,7 @@ async def generate_goal(req: GoalWebRequest) -> dict:
         return {"status": True, "data": goals,
                 "message": f"Successfully generated {len(goals)} goals"}
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False,
                 "message": f"Error generating visualization goals: {str(exception_error)}"}
 
@@ -235,7 +234,7 @@ async def upload_file(file: UploadFile):
             textgen_config=textgen_config)
         return {"status": True, "summary": summary, "data_filename": file.filename}
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False, "message": f"Error processing file: {str(exception_error) }"}
 
 
@@ -258,5 +257,5 @@ def upload_file_via_url(payload: UploadUrl) -> dict:
             textgen_config=textgen_config)
         return {"status": True, "summary": summary, "data_filename": file_name}
     except Exception as exception_error:
-        print(traceback.format_exc())
+
         return {"status": False, "message": f"Error processing file: {str(exception_error) }"}
