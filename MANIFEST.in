@@ -1,0 +1,2 @@
+recursive-include  lida/web/backend/ui * 
+recursive-exclude  notebooks *
