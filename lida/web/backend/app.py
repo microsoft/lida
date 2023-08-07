@@ -36,6 +36,7 @@ files_static_root = os.path.join(root_file_path, "files/")
 data_folder = os.path.join(root_file_path, "files/data")
 os.makedirs(data_folder, exist_ok=True)
 os.makedirs(files_static_root, exist_ok=True)
+os.makedirs(static_folder_root, exist_ok=True)
 
 
 # mount lida front end UI files

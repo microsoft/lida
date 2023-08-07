@@ -5,7 +5,7 @@
 
 LIDA uses off-the-shelf large language models to generate grammar-agnostic visualization specifications and data-faithful infographics.
 
-> **Important Note on Code Execution**: To generate visualizations, LIDA _generates_ and _executes_ code. Ensure that you run LIDA in a secure environment.
+> **Important Note on Code Execution**: To generate visualizations, LIDA _generates_ and _executes_ code. Ensure that you run LIDA in a secure environment. Acknowledge this by setting the environment variable `LIDA_ALLOW_CODE_EVAL=1`
 
 ## How it works
 

@@ -1,5 +1,6 @@
 import base64
 import re
+import os
 import traceback
 from typing import Any, List
 import matplotlib.pyplot as plt
@@ -78,10 +79,14 @@ def get_globals_dict(code_string, data):
 
 
 class ChartExecutor:
-    """Validate text altair visualization code and convert into altair objects with exec"""
+    """Execute code and return chart object"""
 
     def __init__(self) -> None:
-        pass
+        # check if user has given permission to execute code. if env variable
+        # LIDA_ALLOW_CODE_EVAL is set to '1'. Else raise exception
+        if os.environ.get("LIDA_ALLOW_CODE_EVAL") != '1':
+            raise Exception(
+                "Permission to execute code not granted. Please set the environment variable LIDA_ALLOW_CODE_EVAL to '1' to allow code execution.")
 
     def execute(
         self,
