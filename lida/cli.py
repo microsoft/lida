@@ -14,7 +14,7 @@ def ui(
     Launch the lida UI.Pass in parameters host, port, workers, and reload to override the default values.
     """
     uvicorn.run(
-        "lida.web.backend.app:app",
+        "lida.web.app:app",
         host=host,
         port=port,
         workers=workers,

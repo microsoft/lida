@@ -22,6 +22,15 @@ class Summarizer():
         self.summary = None
         self.text_gen = text_gen
 
+    def check_type(self, dtype: str, value):
+        """Cast value to right type to ensure it is JSON serializable"""
+        if "float" in str(dtype):
+            return float(value)
+        elif "int" in str(dtype):
+            return int(value)
+        else:
+            return value
+
     def get_column_properties(self, df: pd.DataFrame, n_samples: int = 3) -> list[dict]:
         """Get properties of each column in a pandas DataFrame"""
         properties_list = []
@@ -30,9 +39,10 @@ class Summarizer():
             properties = {}
             if dtype in [int, float, complex]:
                 properties["dtype"] = "number"
-                properties["std"] = df[column].std()
-                properties["min"] = df[column].min()
-                properties["max"] = df[column].max()
+                properties["std"] = self.check_type(dtype, df[column].std())
+                properties["min"] = self.check_type(dtype, df[column].min())
+                properties["max"] = self.check_type(dtype, df[column].max())
+
             elif dtype == bool:
                 properties["dtype"] = "boolean"
             elif dtype == object:

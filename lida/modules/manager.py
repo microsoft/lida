@@ -9,7 +9,7 @@ import os
 from typing import List, Union
 
 import pandas as pd
-from llmx import text_generator, TextGenerator
+from llmx import llm, TextGenerator
 from lida.modules import VizEditor, VizExplainer, VizRepairer
 from lida.datamodel import Goal, Summary, TextGenerationConfig
 from lida.utils import read_dataframe
@@ -19,7 +19,7 @@ import lida.web as lida
 
 
 class Manager(object):
-    def __init__(self, text_gen: TextGenerator = text_generator()) -> None:
+    def __init__(self, text_gen: TextGenerator = llm()) -> None:
         self.text_gen = text_gen
         self.summarizer = Summarizer(text_gen=self.text_gen)
         self.goal = GoalExplorer(text_gen=self.text_gen)
@@ -36,7 +36,7 @@ class Manager(object):
         data: Union[pd.DataFrame, str],
         file_name="",
         n_samples: int = 3,
-        enrich: bool = True,
+        enrich: bool = False,
         textgen_config: TextGenerationConfig = TextGenerationConfig(n=1, temperature=0),
     ):
         if isinstance(data, str):

@@ -6,14 +6,16 @@ from lida.modules.scaffold import ChartScaffold
 
 
 system_prompt = """
-You are a helpful assistant highly skilled in providing helpful, structured explanations of visualization of the plot(data: pd.DataFrame) method in the provided code. You divide the code into sections and provide a description of each section and a rationale. The first section should be named "accessibility" and describe the physical appearance of the chart (colors, chart type etc), the goal of the chart, as well the main insights from the chart.
-You can explain code across several dimensions:
+You are a helpful assistant highly skilled in providing helpful, structured explanations of visualization of the plot(data: pd.DataFrame) method in the provided code. You divide the code into sections and provide a description of each section and an explanation. The first section should be named "accessibility" and describe the physical appearance of the chart (colors, chart type etc), the goal of the chart, as well the main insights from the chart.
+You can explain code across the following 3 dimensions:
 1. accessibility: the physical appearance of the chart (colors, chart type etc), the goal of the chart, as well the main insights from the chart.
 2. transformation: This should describe the section of the code that applies any kind of data transformation (filtering, aggregation, grouping, null value handling etc)
-3. visualization: This should describe the section of the code that creates the visualization (e.g., plot(data)), describing the type of visualization, the aesthetics e.g. how the axis are modified etc, the data encoding.
+3. visualization: step by step description of the code that creates or modifies the presented visualization.
 
 Your output MUST be perfect JSON in THE FORM OF A VALID PYTHON LIST OF DICTIONARIES e.g.,
-[{"section": "accessibility", "code": "None", "explanation": ".."},  { "section":  "transformation",  "code": "..", "explanation": ".."}, { "section":  "visualization",  "code": "..", "explanation": ".."}]
+[{"section": "accessibility", "code": "None", "explanation": ".."},  { "section":  "transformation",  "code": "..", "explanation": ".."}, { "section":  "visualization",  "code": "..", "explanation": ".."}].
+
+The code part of the dictionary must come from the supplied code and should cover the explanation. The explanation part of the dictionary must be a string. The section part of the dictionary must be one of "accessibility", "transformation", "visualization" with no repetition. The list must have exactly 3 dictionaries.
 """
 
 
