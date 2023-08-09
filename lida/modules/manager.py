@@ -19,8 +19,8 @@ import lida.web as lida
 
 
 class Manager(object):
-    def __init__(self, text_gen: TextGenerator = llm()) -> None:
-        self.text_gen = text_gen
+    def __init__(self, text_gen: TextGenerator = None) -> None:
+        self.text_gen = text_gen or llm()
         self.summarizer = Summarizer(text_gen=self.text_gen)
         self.goal = GoalExplorer(text_gen=self.text_gen)
         self.vizgen = VizGenerator(self.text_gen)

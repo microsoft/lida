@@ -11,8 +11,6 @@ import pandas as pd
 
 from lida.datamodel import ChartExecutorResponse, Summary
 
-# Warning .. it is recommended that this class is only used in a sandboxed environment
-
 
 def preprocess_code(code: str) -> str:
     """Preprocess code to remove any preamble and explanation text"""
@@ -82,11 +80,7 @@ class ChartExecutor:
     """Execute code and return chart object"""
 
     def __init__(self) -> None:
-        # check if user has given permission to execute code. if env variable
-        # LIDA_ALLOW_CODE_EVAL is set to '1'. Else raise exception
-        if os.environ.get("LIDA_ALLOW_CODE_EVAL") != '1':
-            raise Exception(
-                "Permission to execute code not granted. Please set the environment variable LIDA_ALLOW_CODE_EVAL to '1' to allow code execution.")
+        pass
 
     def execute(
         self,
@@ -96,7 +90,13 @@ class ChartExecutor:
         library="altair",
         return_error: bool = False,
     ) -> Any:
-        """Validate and convert code into altair object"""
+        """Validate and convert code"""
+
+        # check if user has given permission to execute code. if env variable
+        # LIDA_ALLOW_CODE_EVAL is set to '1'. Else raise exception
+        if os.environ.get("LIDA_ALLOW_CODE_EVAL") != '1':
+            raise Exception(
+                "Permission to execute code not granted. Please set the environment variable LIDA_ALLOW_CODE_EVAL to '1' to allow code execution.")
 
         charts = []
         code_spec_copy = code_specs.copy()

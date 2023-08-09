@@ -12,9 +12,12 @@ from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, Visuali
 from ..modules import Manager
 
 
-# # instantiate model and generator
+# instantiate model and generator
 textgen = llm()
 logger = logging.getLogger(__name__)
+api_docs = os.environ.get("LIDA_API_DOCS", "False") == "True"
+
+print("Api docs ... ", api_docs)
 
 lida = Manager(text_gen=textgen)
 app = FastAPI()
@@ -26,7 +29,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-api = FastAPI(root_path="/api")
+api = FastAPI(root_path="/api", docs_url="/docs" if api_docs else None, redoc_url=None)
 app.mount("/api", api)
 
 
