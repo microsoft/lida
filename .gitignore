@@ -6,11 +6,12 @@ notebooks/experimental/samples
 notebooks/experimental/gallery
 notebooks/experimental/vega-datasets
 .azure
-
+.release.sh
 lida/generators/cache/cache.*
 lida/generators/cache/* 
 lib/samples/
-lida/web/backend/files
+lida/web/files
+lida/web/data
 examples/experiment_results.json
 examples/data
 data  

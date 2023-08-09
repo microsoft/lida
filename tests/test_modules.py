@@ -1,8 +1,8 @@
-from lida import TextGenerationConfig, text_generator
+from lida import TextGenerationConfig, llm
 from lida.modules import Manager
 
 
-lida = Manager(text_gen=text_generator("openai"))
+lida = Manager(text_gen=llm("openai"))
 
 
 cars_data_url = "https://raw.githubusercontent.com/uwdata/draco/master/data/cars.csv"
@@ -13,7 +13,7 @@ def test_summarizer():
     summary_no_enrich = lida.summarize(cars_data_url, enrich=False)
     summary = lida.summarize(
         "https://raw.githubusercontent.com/uwdata/draco/master/data/cars.csv",
-        textgen_config=textgen_config)
+        textgen_config=textgen_config, enrich=True)
 
     assert summary_no_enrich != summary
     assert "dataset_description" in summary and len(summary["dataset_description"]) > 0
