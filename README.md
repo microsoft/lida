@@ -1,6 +1,10 @@
 # LIDA: Automatic Generation of Visualizations and Infographics using Large Language Models
 
 [![PyPI version](https://badge.fury.io/py/lida.svg)](https://badge.fury.io/py/lida)
+<a target="_blank" href="https://colab.research.google.com/github/microsoft/lida/blob/main/notebooks/tutorial.ipynb">
+<img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
 <img src="docs/images/lidascreen.png" width="100%" />
 
 LIDA uses off-the-shelf large language models to generate grammar-agnostic visualization specifications and data-faithful infographics.
