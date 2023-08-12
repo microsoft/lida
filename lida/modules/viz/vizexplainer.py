@@ -12,7 +12,7 @@ You can explain code across the following 3 dimensions:
 2. transformation: This should describe the section of the code that applies any kind of data transformation (filtering, aggregation, grouping, null value handling etc)
 3. visualization: step by step description of the code that creates or modifies the presented visualization.
 
-Your output MUST be perfect JSON in THE FORM OF A VALID PYTHON LIST OF DICTIONARIES e.g.,
+Your output MUST be perfect JSON in THE FORM OF A VALID JSON LIST  e.g.,
 [{"section": "accessibility", "code": "None", "explanation": ".."},  { "section":  "transformation",  "code": "..", "explanation": ".."}, { "section":  "visualization",  "code": "..", "explanation": ".."}].
 
 The code part of the dictionary must come from the supplied code and should cover the explanation. The explanation part of the dictionary must be a string. The section part of the dictionary must be one of "accessibility", "transformation", "visualization" with no repetition. The list must have exactly 3 dictionaries.
@@ -24,14 +24,12 @@ class VizExplainer(object):
 
     def __init__(
         self,
-        model: TextGenerator,
     ) -> None:
-        self.model = model
         self.scaffold = ChartScaffold()
 
     def generate(
             self, code: str,
-            textgen_config: TextGenerationConfig, library='seaborn'):
+            textgen_config: TextGenerationConfig, text_gen: TextGenerator, library='seaborn'):
         """Generate a visualization explanation given some code"""
 
         messages = [
@@ -41,7 +39,7 @@ class VizExplainer(object):
              "content": f"Generate a structured explanation of the code explanation for the code above."}
         ]
 
-        completions: TextGenerationResponse = self.model.generate(
+        completions: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)
 
         completions = [clean_code_snippet(x['content']) for x in completions.text]

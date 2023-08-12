@@ -2,6 +2,7 @@ import typer
 import uvicorn
 import os
 from typing_extensions import Annotated
+from llmx import providers
 
 # from lida.web.backend.app import launch
 
@@ -9,25 +10,15 @@ app = typer.Typer()
 
 
 @app.command()
-def ui(host: Annotated[str, typer.Argument(help="The host to run the server on.")] = "127.0.0.1",
-       port: Annotated[int, typer.Argument(help="The port to run the server on.")] = 8081,
-       workers: Annotated[int, typer.Argument(help="Number of worker processes.")] = 1,
-       reload: Annotated[bool, typer.Argument(help="Enable auto-reload.")] = True,
-       docs: Annotated[bool, typer.Argument(help="Enable docs.")] = False,
-       code_eval: Annotated[str, typer.Argument(help="Enable code evaluation.")] = "0"
-       ):
+def ui(host: str = "127.0.0.1",
+       port: int = 8081,
+       workers: int = 1,
+       reload: Annotated[bool, typer.Option("--reload")] = True,
+       docs: bool = False):
     """
-    Launch the lida UI.Pass in parameters host, port, workers, and reload to override the default values.
+    Launch the lida .Pass in parameters host, port, workers, and reload to override the default values.
     """
-# def ui(host: str = "127.0.0.1", port: int = 8081, workers: int = 1,
-#         reload: bool = True, docs: bool = False, code_eval: str = 0):
-#     """
-# Launch the lida UI.Pass in parameters host, port, workers, and reload to
-# override the default values.
 
-#     """
-
-    os.environ["LIDA_ALLOW_CODE_EVAL"] = code_eval
     os.environ["LIDA_API_DOCS"] = str(docs)
 
     uvicorn.run(
@@ -40,8 +31,20 @@ def ui(host: Annotated[str, typer.Argument(help="The host to run the server on."
 
 
 @app.command()
-def list():
-    print("list")
+def hello(name: Annotated[str, typer.Argument(help="The host to run the server on.")] = "None"):
+    if name:
+        typer.echo(f"Hello {name}")
+    else:
+        typer.echo("Hello World!")
+
+
+@app.command()
+def models():
+    print("A list of supported providers:")
+    for provider in providers.items():
+        print(f"Provider: {provider[1]['name']}")
+        for model in provider[1]["models"]:
+            print(f"  - {model['name']}")
 
 
 def run():

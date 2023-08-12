@@ -7,6 +7,7 @@
 
 import os
 from typing import List, Union
+import logging
 
 import pandas as pd
 from llmx import llm, TextGenerator
@@ -18,18 +19,29 @@ from lida.modules import Summarizer, GoalExplorer, VizGenerator, ChartExecutor, 
 import lida.web as lida
 
 
+logger = logging.getLogger(__name__)
+
+
 class Manager(object):
     def __init__(self, text_gen: TextGenerator = None) -> None:
         self.text_gen = text_gen or llm()
-        self.summarizer = Summarizer(text_gen=self.text_gen)
-        self.goal = GoalExplorer(text_gen=self.text_gen)
-        self.vizgen = VizGenerator(self.text_gen)
-        self.vizeditor = VizEditor(self.text_gen)
+        self.summarizer = Summarizer()
+        self.goal = GoalExplorer()
+        self.vizgen = VizGenerator()
+        self.vizeditor = VizEditor()
         self.executor = ChartExecutor()
-        self.explainer = VizExplainer(self.text_gen)
-        self.evaluator = VizEvaluator(self.text_gen)
-        self.repairer = VizRepairer(self.text_gen)
+        self.explainer = VizExplainer()
+        self.evaluator = VizEvaluator()
+        self.repairer = VizRepairer()
         self.data = None
+
+    def check_textgen(self, config: TextGenerationConfig):
+        """Check if self.text_gen is the same as the config passed in. If not, update self.text_gen"""
+
+        if self.text_gen.provider != config.provider:
+            logger.info(
+                f"Switchging Text Generator Provider from {self.text_gen.provider} to {config.provider}")
+            self.text_gen = llm(provider=config.provider)
 
     def summarize(
         self,
@@ -39,6 +51,9 @@ class Manager(object):
         enrich: bool = False,
         textgen_config: TextGenerationConfig = TextGenerationConfig(n=1, temperature=0),
     ):
+
+        self.check_textgen(config=textgen_config)
+
         if isinstance(data, str):
             file_name = data.split("/")[-1]
             data = read_dataframe(data)
@@ -46,14 +61,16 @@ class Manager(object):
         self.data = data
         # self.data = data
         return self.summarizer.summarize(
-            data=self.data, file_name=file_name, n_samples=n_samples, enrich=enrich,
-            textgen_config=textgen_config
-        )
+            data=self.data, text_gen=self.text_gen, file_name=file_name, n_samples=n_samples,
+            enrich=enrich, textgen_config=textgen_config)
 
     def generate_goals(
             self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
             n=5):
-        return self.goal.generate(summary=summary, textgen_config=textgen_config, n=n)
+        self.check_textgen(config=textgen_config)
+
+        return self.goal.generate(summary=summary, text_gen=self.text_gen,
+                                  textgen_config=textgen_config, n=n)
 
     def generate_viz(
         self,
@@ -62,9 +79,12 @@ class Manager(object):
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
         library="seaborn",
     ):
+
+        print("Generating viz ....")
+        self.check_textgen(config=textgen_config)
         return self.vizgen.generate(
-            summary=summary, goal=goal, textgen_config=textgen_config, library=library
-        )
+            summary=summary, goal=goal, textgen_config=textgen_config, text_gen=self.text_gen,
+            library=library)
 
     def execute_viz(
         self,
@@ -79,7 +99,7 @@ class Manager(object):
             root_file_path = os.path.dirname(os.path.abspath(lida.__file__))
             print(root_file_path)
             data = read_dataframe(
-                os.path.join(root_file_path, "backend/files/data", summary.file_name)
+                os.path.join(root_file_path, "files/data", summary.file_name)
             )
 
         # col_properties = summary.properties
@@ -110,6 +130,8 @@ class Manager(object):
             _type_: _description_
         """
 
+        self.check_textgen(config=textgen_config)
+
         if isinstance(instructions, str):
             instructions = [instructions]
 
@@ -118,6 +140,7 @@ class Manager(object):
             summary=summary,
             instructions=instructions,
             textgen_config=textgen_config,
+            text_gen=self.text_gen,
             library=library,
         )
 
@@ -131,12 +154,14 @@ class Manager(object):
         library: str = "seaborn",
     ):
         """ Repair a visulization given some feedback"""
+        self.check_textgen(config=textgen_config)
         return self.repairer.generate(
             code=code,
             feedback=feedback,
             goal=goal,
             summary=summary,
             textgen_config=textgen_config,
+            text_gen=self.text_gen,
             library=library,
         )
 
@@ -155,10 +180,11 @@ class Manager(object):
         Returns:
             _type_: _description_
         """
-
+        self.check_textgen(config=textgen_config)
         return self.explainer.generate(
             code=code,
             textgen_config=textgen_config,
+            text_gen=self.text_gen,
             library=library,
         )
 
@@ -179,9 +205,12 @@ class Manager(object):
             _type_: _description_
         """
 
+        self.check_textgen(config=textgen_config)
+
         return self.evaluator.generate(
             code=code,
             goal=goal,
             textgen_config=textgen_config,
+            text_gen=self.text_gen,
             library=library,
         )

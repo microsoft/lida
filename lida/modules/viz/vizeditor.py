@@ -13,14 +13,12 @@ class VizEditor(object):
 
     def __init__(
         self,
-        model: TextGenerator,
     ) -> None:
-        self.model = model
         self.scaffold = ChartScaffold()
 
     def generate(
             self, code: str, summary: Summary, instructions: list[str],
-            textgen_config: TextGenerationConfig, library='altair'):
+            textgen_config: TextGenerationConfig, text_gen: TextGenerator, library='altair'):
         """Edit a code spec based on instructions"""
 
         instructions = [
@@ -38,6 +36,6 @@ class VizEditor(object):
                                                                                                                                          "content": f"The code to be modified is: {code}.  You MUST use only the {library} library with the following instructions {library_instructions}. The resulting code MUST use the following template {library_template}"}]
         messages.extend(instructions)
 
-        completions: TextGenerationResponse = self.model.generate(
+        completions: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)
         return [x['content'] for x in completions.text]

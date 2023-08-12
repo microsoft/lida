@@ -15,14 +15,13 @@ class VizRepairer(object):
 
     def __init__(
         self,
-        model: TextGenerator,
     ) -> None:
-        self.model = model
         self.scaffold = ChartScaffold()
 
     def generate(
             self, code: str, feedback: Union[str, Dict, List[Dict]],
-            goal: Goal, summary: Summary, textgen_config: TextGenerationConfig, library='altair',):
+            goal: Goal, summary: Summary, textgen_config: TextGenerationConfig,
+            text_gen: TextGenerator, library='altair',):
         """Fix a code spec based on feedback"""
         library_template, library_instructions = self.scaffold.get_template(Goal(
             index=0,
@@ -39,6 +38,6 @@ class VizRepairer(object):
 
         # library with the following instructions {library_instructions}
 
-        completions: TextGenerationResponse = self.model.generate(
+        completions: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)
         return [x['content'] for x in completions.text]

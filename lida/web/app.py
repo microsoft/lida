@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import traceback
 
-from llmx import llm
+from llmx import llm, providers
 from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRepairWebRequest, VisualizeWebRequest
 from ..modules import Manager
 
@@ -47,6 +47,8 @@ app.mount("/", StaticFiles(directory=static_folder_root, html=True), name="ui")
 api.mount("/files", StaticFiles(directory=files_static_root, html=True), name="files")
 
 
+# def check_model
+
 @api.post("/visualize")
 async def visualize_data(req: VisualizeWebRequest) -> dict:
     """Generate goals given a dataset summary"""
@@ -72,14 +74,14 @@ async def visualize_data(req: VisualizeWebRequest) -> dict:
     except Exception as exception_error:
         logger.error(f"Error generating visualization goals: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization goals."}
+                "message": f"Error generating visualization goals. {str(exception_error)}"}
 
 
 @api.post("/visualize/edit")
 async def edit_visualization(req: VisualizeEditWebRequest) -> dict:
     """Given a visualization code, and a goal, generate a new visualization"""
     try:
-        textgen_config = TextGenerationConfig(n=1, temperature=0)
+        textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig()
         code_specs = lida.edit_viz(
             code=req.code,
             summary=req.summary,
@@ -101,8 +103,9 @@ async def edit_visualization(req: VisualizeEditWebRequest) -> dict:
 
     except Exception as exception_error:
         logger.error(f"Error generating visualization edits: {str(exception_error)}")
+        print(traceback.print_exc())
         return {"status": False,
-                "message": f"Error generating visualization goals."}
+                "message": f"Error generating visualization edits."}
 
 
 @api.post("/visualize/repair")
@@ -140,13 +143,14 @@ async def repair_visualization(req: VisualizeRepairWebRequest) -> dict:
 @api.post("/visualize/explain")
 async def explain_visualization(req: VisualizeExplainWebRequest) -> dict:
     """Given a visualization code, provide an explanation of the code"""
-
+    textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
+        n=1,
+        temperature=0)
+    print("textgen_config: ", req.textgen_config)
     try:
         explanations = lida.explain_viz(
             code=req.code,
-            textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
-                n=1,
-                temperature=0),
+            textgen_config=textgen_config,
             library=req.library)
         return {"status": True, "explanations": explanations[0],
                 "message": "Successfully generated explanations"}
@@ -199,13 +203,14 @@ async def generate_text(textgen_config: TextGenerationConfig) -> dict:
 async def generate_goal(req: GoalWebRequest) -> dict:
     """Generate goals given a dataset summary"""
     try:
-        goals = lida.generate_goals(req.summary, n=req.n)
+        textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig()
+        goals = lida.generate_goals(req.summary, n=req.n, textgen_config=textgen_config)
         return {"status": True, "data": goals,
                 "message": f"Successfully generated {len(goals)} goals"}
     except Exception as exception_error:
         logger.error(f"Error generating goals: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization goals."}
+                "message": f"Error generating visualization goals. {exception_error}"}
 
 
 @api.post("/summarize")
@@ -263,3 +268,10 @@ def upload_file_via_url(payload: UploadUrl) -> dict:
         # traceback.print_exc()
         logger.error(f"Error processing file: {str(exception_error)}")
         return {"status": False, "message": f"Error processing file."}
+
+# list supported models
+
+
+@api.get("/models")
+def list_models() -> dict:
+    return {"status": True, "data": providers, "message": "Successfully listed models"}

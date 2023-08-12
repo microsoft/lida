@@ -17,6 +17,7 @@ def preprocess_code(code: str) -> str:
 
     code = code.replace("<imports>", "")
     code = code.replace("<stub>", "")
+    code = code.replace("<transforms>", "")
 
     # remove all text after chart = plot(data)
     if "chart = plot(data)" in code:
@@ -92,11 +93,11 @@ class ChartExecutor:
     ) -> Any:
         """Validate and convert code"""
 
-        # check if user has given permission to execute code. if env variable
-        # LIDA_ALLOW_CODE_EVAL is set to '1'. Else raise exception
-        if os.environ.get("LIDA_ALLOW_CODE_EVAL") != '1':
-            raise Exception(
-                "Permission to execute code not granted. Please set the environment variable LIDA_ALLOW_CODE_EVAL to '1' to allow code execution.")
+        # # check if user has given permission to execute code. if env variable
+        # # LIDA_ALLOW_CODE_EVAL is set to '1'. Else raise exception
+        # if os.environ.get("LIDA_ALLOW_CODE_EVAL") != '1':
+        #     raise Exception(
+        #         "Permission to execute code not granted. Please set the environment variable LIDA_ALLOW_CODE_EVAL to '1' to allow code execution.")
 
         charts = []
         code_spec_copy = code_specs.copy()

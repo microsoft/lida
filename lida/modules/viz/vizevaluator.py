@@ -24,12 +24,11 @@ class VizEvaluator(object):
 
     def __init__(
         self,
-        model: TextGenerator,
     ) -> None:
-        self.model = model
+        pass
 
     def generate(self, code: str, goal: Goal,
-                 textgen_config: TextGenerationConfig, library='altair'):
+                 textgen_config: TextGenerationConfig, text_gen: TextGenerator, library='altair'):
         """Generate a visualization explanation given some code"""
 
         messages = [
@@ -40,6 +39,6 @@ class VizEvaluator(object):
 
         # print(messages)
 
-        completions: TextGenerationResponse = self.model.generate(
+        completions: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)
         return [x['content'] for x in completions.text]

@@ -17,7 +17,7 @@ class ChartScaffold(object):
         pass
 
     def get_template(self, goal: Goal, library: str):
-        mpl_pre = f"Set chart title to {goal.question}. If the solution requires a single value (e.g. max, min, median, first, last etc), ALWAYS add a line (axvline or axhline) to the chart, ALWAYS with a legend containing the single value (formatted with 0.2F). If using a field where semantic_type=date, do the following i) convert date fields to date types using data[''] = pd.to_datetime(data[''], errors='coerce'), ALWAYS use  errors='coerce' ii) drop the rows with NaT values data = data[pd.notna(data[''])] iii) convert field to right time format for plotting.  ALWAYS make sure the x-axis labels are legible (e.g., rotate when needed). Use BaseMap for charts that require a map. Given the dataset summary, the plot(data) method should generate a {library} chart ({goal.visualization}) that addresses this goal: {goal.question}. The plot method must return a matplotlib object. Think step by step. \n"
+        mpl_pre = f"Set chart title to {goal.question}. If the solution requires a single value (e.g. max, min, median, first, last etc), ALWAYS add a line (axvline or axhline) to the chart, ALWAYS with a legend containing the single value (formatted with 0.2F). If using a field where semantic_type=date, YOU MUST APPLY the following transform before using that column i) convert date fields to date types using data[''] = pd.to_datetime(data[''], errors='coerce'), ALWAYS use  errors='coerce' ii) drop the rows with NaT values data = data[pd.notna(data[''])] iii) convert field to right time format for plotting.  ALWAYS make sure the x-axis labels are legible (e.g., rotate when needed). Use BaseMap for charts that require a map. Given the dataset summary, the plot(data) method should generate a {library} chart ({goal.visualization}) that addresses this goal: {goal.question}. The plot method must return a matplotlib object. Think step by step. \n"
 
         if library == "matplotlib":
             instructions = {"role": "assistant", "content": mpl_pre}
@@ -29,7 +29,7 @@ import pandas as pd
 # plan -
 def plot(data: pd.DataFrame):
     <stub> # only modify this section
-    plt.title( \n{goal.question}, wrap=True)
+    plt.title('{goal.question}', wrap=True)
     return plt;
 
 chart = plot(data) # data already contains the data to be plotted. Always include this line"""
@@ -47,7 +47,7 @@ import matplotlib.pyplot as plt
 def plot(data: pd.DataFrame):
 
     <stub> # only modify this section
-    plt.title({goal.question}, wrap=True)
+    plt.title('{goal.question}', wrap=True)
     return plt;
 
 chart = plot(data) # data already contains the data to be plotted. Always include this line"""

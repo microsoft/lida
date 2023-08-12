@@ -4,6 +4,7 @@ from typing import Union
 import pandas as pd
 from lida.utils import clean_code_snippet, read_dataframe
 from lida.datamodel import TextGenerationConfig
+from lida import TextGenerator
 
 
 system_prompt = """
@@ -18,9 +19,8 @@ logger = logging.getLogger(__name__)
 
 
 class Summarizer():
-    def __init__(self, text_gen) -> None:
+    def __init__(self) -> None:
         self.summary = None
-        self.text_gen = text_gen
 
     def check_type(self, dtype: str, value):
         """Cast value to right type to ensure it is JSON serializable"""
@@ -86,7 +86,8 @@ class Summarizer():
 
         return properties_list
 
-    def encrich(self, result: dict, textgen_config: TextGenerationConfig) -> dict:
+    def encrich(self, base_summary: dict, text_gen: TextGenerator,
+                textgen_config: TextGenerationConfig) -> dict:
         """Enrich the data summary with descriptions"""
         logger.info(f"Enriching the data summary with descriptions")
 
@@ -94,23 +95,23 @@ class Summarizer():
             {"role": "system", "content": system_prompt},
             {"role": "assistant", "content": f"""
         Annotate the dictionary below. Only return a JSON object.
-        {result}
+        {base_summary}
         """},
         ]
 
-        response = self.text_gen.generate(messages=messages, config=textgen_config)
+        response = text_gen.generate(messages=messages, config=textgen_config)
+        enriched_summary = base_summary
         try:
             json_string = clean_code_snippet(response.text[0]["content"])
-            result = json.loads(json_string)
+            enriched_summary = json.loads(json_string)
         except json.decoder.JSONDecodeError:
-            logger.info(f"Error decoding JSON: {response.text[0]['content']}")
+            error_msg = f"The model did not return a valid JSON object while attempting to generate an enriched data summary. Consider using a base summary. {response.text[0]['content']}"
+            logger.info(error_msg)
             print(response.text[0]["content"])
-            raise ValueError(
-                f"The model did not return a valid JSON object while attempting to summarize the data. Please try again.",
-                response.usage)
-        return result
+            raise ValueError(error_msg + "" + response.usage)
+        return enriched_summary
 
-    def summarize(self, data: Union[pd.DataFrame, str],
+    def summarize(self, data: Union[pd.DataFrame, str], text_gen: TextGenerator,
                   file_name="", n_samples: int = 3, enrich: bool = True,
                   textgen_config=TextGenerationConfig(n=1)) -> dict:
         """Summarize data from a pandas DataFrame or a file location"""
@@ -120,15 +121,19 @@ class Summarizer():
             file_name = data.split("/")[-1]
             data = read_dataframe(data)
         data_properties = self.get_column_properties(data, n_samples)
-        result = {
+        base_summary = {
             "name": file_name,
             "file_name": file_name,
             "dataset_description": "",
             "fields": data_properties,
         }
+        data_summary = base_summary
         if enrich:
-            result = self.encrich(result, textgen_config)
-        result["field_names"] = data.columns.tolist()
-        result["file_name"] = file_name
+            data_summary = self.encrich(
+                base_summary,
+                text_gen=text_gen,
+                textgen_config=textgen_config)
+        data_summary["field_names"] = data.columns.tolist()
+        data_summary["file_name"] = file_name
 
-        return result
+        return data_summary

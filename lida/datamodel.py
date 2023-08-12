@@ -50,6 +50,7 @@ class Summary:
 class GoalWebRequest:
     """A Goal Web Request"""
     summary: Summary
+    textgen_config: Optional[TextGenerationConfig] = field(default_factory=TextGenerationConfig)
     n: int = 5
 
 
