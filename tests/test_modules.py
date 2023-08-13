@@ -40,13 +40,13 @@ def test_vizgen():
         cars_data_url,
         textgen_config=textgen_config, enrich=False)
 
-    goals = lida.generate_goals(summary, n=2, textgen_config=textgen_config)
-    vis_specs = lida.generate_viz(
+    goals = lida.goals(summary, n=2, textgen_config=textgen_config)
+    vis_specs = lida.visualize(
         summary=summary,
         goal=goals[0],
         textgen_config=textgen_config,
         library="seaborn")
-    charts = lida.execute_viz(
+    charts = lida.execute(
         code_specs=vis_specs,
         data=lida.data,
         summary=summary,
