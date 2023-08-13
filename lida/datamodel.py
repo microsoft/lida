@@ -64,6 +64,15 @@ class VisualizeWebRequest:
 
 
 @dataclass
+class VisualizeRecommendRequest:
+    """A Visualize Recommendation Request"""
+    summary: Summary
+    code: str
+    library: str = "seaborn"
+    textgen_config: Optional[TextGenerationConfig] = field(default_factory=TextGenerationConfig)
+
+
+@dataclass
 class VisualizeEditWebRequest:
     """A Visualize Edit Web Request"""
     summary: Summary

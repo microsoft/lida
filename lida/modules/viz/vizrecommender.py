@@ -1,6 +1,7 @@
 
-from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
 from lida.modules.scaffold import ChartScaffold
+from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
+# from lida.modules.scaffold import ChartScaffold
 from lida.datamodel import Goal, Summary
 
 
@@ -35,7 +36,10 @@ class VizRecommender(object):
             {"role": "system", "content": f"The dataset summary is : {summary}"},
             {"role": "system",
              "content":
-             f"The original visualization code is: {code}.  You MUST use only the {library} library with the following instructions {library_instructions}. The resulting code MUST use the following template {library_template}. Now write code for an additional visualization that a user may be interested in given the goal and the dataset summary above."}]
+             f"The original visualization code is: {code}.  You MUST use only the {library} library with the following instructions {library_instructions}. The resulting code MUST use the following template {library_template}."},
+            {"role": "user", "content": "Now write code for an additional visualizations that a user may be interested in given the goal and the dataset summary above."}
+
+        ]
 
         textgen_config.messages = messages
         completions: TextGenerationResponse = text_gen.generate(

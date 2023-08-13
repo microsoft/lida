@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import traceback
 
 from llmx import llm, providers
-from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRepairWebRequest, VisualizeWebRequest
+from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRecommendRequest, VisualizeRepairWebRequest, VisualizeWebRequest
 from ..modules import Manager
 
 
@@ -185,6 +185,35 @@ async def evaluate_visualization(req: VisualizeEvalWebRequest) -> dict:
         logger.error(f"Error generating visualization evaluation: {str(exception_error)}")
         return {"status": False,
                 "message": f"Error generating visualization evaluation."}
+
+
+@api.post("/visualize/recommend")
+async def recommend_visualization(req: VisualizeRecommendRequest) -> dict:
+    """Given a dataset summary, generate a visualization recommendations"""
+
+    try:
+        textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig()
+        code_specs = lida.recommend(
+            summary=req.summary,
+            code=req.code,
+            textgen_config=textgen_config,
+            library=req.library)
+        charts = lida.execute(
+            code_specs=code_specs,
+            data=lida.data,
+            summary=req.summary,
+            library=req.library,
+            return_error=True)
+        # charts = [asdict(chart) for chart in charts]
+        if len(charts) == 0:
+            return {"status": False, "message": "No charts generated"}
+        return {"status": True, "charts": charts,
+                "message": "Successfully generated chart recommendation"}
+
+    except Exception as exception_error:
+        logger.error(f"Error generating visualization recommendation: {str(exception_error)}")
+        return {"status": False,
+                "message": f"Error generating visualization recommendation."}
 
 
 @api.post("/text/generate")
