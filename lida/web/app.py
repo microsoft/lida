@@ -54,12 +54,12 @@ async def visualize_data(req: VisualizeWebRequest) -> dict:
     """Generate goals given a dataset summary"""
     try:
         # print(req.textgen_config)
-        code_specs = lida.generate_viz(
+        code_specs = lida.visualize(
             summary=req.summary,
             goal=req.goal,
             textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(),
             library=req.library)
-        charts = lida.execute_viz(
+        charts = lida.execute(
             code_specs=code_specs,
             data=lida.data,
             summary=req.summary,
@@ -82,14 +82,14 @@ async def edit_visualization(req: VisualizeEditWebRequest) -> dict:
     """Given a visualization code, and a goal, generate a new visualization"""
     try:
         textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig()
-        code_specs = lida.edit_viz(
+        code_specs = lida.edit(
             code=req.code,
             summary=req.summary,
             instructions=req.instructions,
             textgen_config=textgen_config,
             library=req.library)
 
-        charts = lida.execute_viz(
+        charts = lida.execute(
             code_specs=code_specs,
             data=lida.data,
             summary=req.summary,
@@ -114,7 +114,7 @@ async def repair_visualization(req: VisualizeRepairWebRequest) -> dict:
 
     try:
 
-        code_specs = lida.repair_viz(
+        code_specs = lida.repair(
             code=req.code,
             feedback=req.feedback,
             goal=req.goal,
@@ -122,7 +122,7 @@ async def repair_visualization(req: VisualizeRepairWebRequest) -> dict:
             textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(),
             library=req.library)
 
-        charts = lida.execute_viz(
+        charts = lida.execute(
             code_specs=code_specs,
             data=lida.data,
             summary=req.summary,
@@ -148,7 +148,7 @@ async def explain_visualization(req: VisualizeExplainWebRequest) -> dict:
         temperature=0)
     print("textgen_config: ", req.textgen_config)
     try:
-        explanations = lida.explain_viz(
+        explanations = lida.explain(
             code=req.code,
             textgen_config=textgen_config,
             library=req.library)
@@ -166,7 +166,7 @@ async def evaluate_visualization(req: VisualizeEvalWebRequest) -> dict:
     """Given a visualization code, provide an evaluation of the code"""
 
     try:
-        evaluations = lida.evaluate_viz(
+        evaluations = lida.evaluate(
             code=req.code,
             goal=req.goal,
             textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
@@ -204,7 +204,7 @@ async def generate_goal(req: GoalWebRequest) -> dict:
     """Generate goals given a dataset summary"""
     try:
         textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig()
-        goals = lida.generate_goals(req.summary, n=req.n, textgen_config=textgen_config)
+        goals = lida.goals(req.summary, n=req.n, textgen_config=textgen_config)
         return {"status": True, "data": goals,
                 "message": f"Successfully generated {len(goals)} goals"}
     except Exception as exception_error:

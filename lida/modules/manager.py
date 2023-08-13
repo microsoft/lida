@@ -14,7 +14,7 @@ from llmx import llm, TextGenerator
 from lida.modules import VizEditor, VizExplainer, VizRepairer
 from lida.datamodel import Goal, Summary, TextGenerationConfig
 from lida.utils import read_dataframe
-from lida.modules import Summarizer, GoalExplorer, VizGenerator, ChartExecutor, VizEvaluator
+from lida.modules import Summarizer, GoalExplorer, VizGenerator, ChartExecutor, VizEvaluator, VizRecommender
 
 import lida.web as lida
 
@@ -33,6 +33,7 @@ class Manager(object):
         self.explainer = VizExplainer()
         self.evaluator = VizEvaluator()
         self.repairer = VizRepairer()
+        self.recommender = VizRecommender()
         self.data = None
 
     def check_textgen(self, config: TextGenerationConfig):
@@ -64,7 +65,7 @@ class Manager(object):
             data=self.data, text_gen=self.text_gen, file_name=file_name, n_samples=n_samples,
             enrich=enrich, textgen_config=textgen_config)
 
-    def generate_goals(
+    def goals(
             self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
             n=5):
         self.check_textgen(config=textgen_config)
@@ -72,7 +73,7 @@ class Manager(object):
         return self.goal.generate(summary=summary, text_gen=self.text_gen,
                                   textgen_config=textgen_config, n=n)
 
-    def generate_viz(
+    def visualize(
         self,
         summary,
         goal,
@@ -80,13 +81,12 @@ class Manager(object):
         library="seaborn",
     ):
 
-        print("Generating viz ....")
         self.check_textgen(config=textgen_config)
         return self.vizgen.generate(
             summary=summary, goal=goal, textgen_config=textgen_config, text_gen=self.text_gen,
             library=library)
 
-    def execute_viz(
+    def execute(
         self,
         code_specs,
         data,
@@ -112,7 +112,7 @@ class Manager(object):
             return_error=return_error,
         )
 
-    def edit_viz(
+    def edit(
         self,
         code,
         summary: Summary,
@@ -144,7 +144,7 @@ class Manager(object):
             library=library,
         )
 
-    def repair_viz(
+    def repair(
         self,
         code,
         goal: Goal,
@@ -165,7 +165,7 @@ class Manager(object):
             library=library,
         )
 
-    def explain_viz(
+    def explain(
         self,
         code,
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
@@ -188,7 +188,7 @@ class Manager(object):
             library=library,
         )
 
-    def evaluate_viz(
+    def evaluate(
         self,
         code,
         goal: Goal,
@@ -210,6 +210,33 @@ class Manager(object):
         return self.evaluator.generate(
             code=code,
             goal=goal,
+            textgen_config=textgen_config,
+            text_gen=self.text_gen,
+            library=library,
+        )
+
+    def recommend(
+        self,
+        code,
+        summary: Summary,
+        textgen_config: TextGenerationConfig = TextGenerationConfig(),
+        library: str = "seaborn",
+    ):
+        """Edit a visualization code given a set of instructions
+
+        Args:
+            code (_type_): _description_
+            instructions (List[Dict]): A list of instructions
+
+        Returns:
+            _type_: _description_
+        """
+
+        self.check_textgen(config=textgen_config)
+
+        return self.recommender.generate(
+            code=code,
+            summary=summary,
             textgen_config=textgen_config,
             text_gen=self.text_gen,
             library=library,
