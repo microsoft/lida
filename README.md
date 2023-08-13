@@ -8,11 +8,11 @@
 
 <!-- <img src="docs/images/lidascreen.png" width="100%" /> -->
 
+LIDA uses off-the-shelf large language models (OpenAI, PaLM, Cohere, Huggingface) to generate grammar-agnostic visualization specifications and data-faithful infographics.
+
 ![lida components](docs/images/lidamodules.jpg)
 
 Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb).
-
-LIDA uses off-the-shelf large language models (OpenAI, PaLM, Cohere, Huggingface) to generate grammar-agnostic visualization specifications and data-faithful infographics.
 
 > **Note:**
 > To create visualizations, LIDA _generates_ and _executes_ code.
@@ -20,9 +20,22 @@ LIDA uses off-the-shelf large language models (OpenAI, PaLM, Cohere, Huggingface
 
 ## Features
 
-LIDA comprises of 4 modules - A SUMMARIZER that converts data into a rich but compact natural language summary, a GOAL EXPLORER that enumerates visualization goals given the data, a VISGENERATOR that generates, refines, executes and filters visualization code and an INFOGRAPHER module (tbd) that yields data-faithful stylized graphics using IGMs. LIDA provides a python api, and a hybrid user interface (direct manipulation and **multilingual** natural language) for interactive chart, infographics and data story generation. A summary of what you can do with LIDA is listed below:
+LIDA comprises of 4 modules - A SUMMARIZER that converts data into a rich but compact natural language summary, a GOAL EXPLORER that enumerates visualization goals given the data, a VISGENERATOR that generates, refines, executes and filters visualization code and an INFOGRAPHER module (tbd) that yields data-faithful stylized graphics using IGMs. LIDA provides a python api, and a hybrid user interface (direct manipulation and **multilingual** natural language) for interactive chart, infographics and data story generation.
 
-- **Data Summary**: Given a dataset, generate a compact summary of the data.
+LIDA treats _**visualizations as code**_. A summary of key features are listed below:
+
+- [x] Data Summarization
+- [x] Goal Generation
+- [x] Visualization Generation
+- [x] Visualization Editing
+- [x] Visualization Explanation
+- [x] Visualization Evaluation and Repair
+- [x] Visualization Recommendation
+- [ ] Infographic Generation
+
+### Data Summarization
+
+Given a dataset, generate a compact summary of the data.
 
 ```python
 from lida.modules import Manager
@@ -31,13 +44,17 @@ lida = Manager()
 summary = lida.summarize("data/cars.json") # generate data summary
 ```
 
-- **Goal Generation**: Generate a set of visualization goals given a data summary.
+### Goal Generation
+
+Generate a set of visualization goals given a data summary.
 
 ```python
 goals = lida.goals(summary, n=5) # generate goals
 ```
 
-- **Visualization Generation**: Generate, refine, execute and filter visualization code given a data summary and visualization goal. Note that LIDA represents **visualizations as code**.
+### Visualization Generation
+
+Generate, refine, execute and filter visualization code given a data summary and visualization goal. Note that LIDA represents **visualizations as code**.
 
 ```python
 # generate code specifications for charts
@@ -47,7 +64,9 @@ vis_specs = lida.visualize(summary=summary, goal=goals[0], library="matplotlib")
 charts = lida.execute(code_specs=vis_specs)
 ```
 
-- **Visualization Editing**: Given a visualization, edit the visualization using natural language.
+### Visualization Editing
+
+Given a visualization, edit the visualization using natural language.
 
 ```python
 # modify chart using natural language
@@ -57,26 +76,34 @@ edited_chartspecs = lida.execute(code_specs=vis_specs, data=manager.data)
 
 ```
 
-- **Visualization Explanation**: Given a visualization, generate a natural language explanation of the visualization code (accessibility, data transformations applied, visualization code)
+### Visualization Explanation
+
+Given a visualization, generate a natural language explanation of the visualization code (accessibility, data transformations applied, visualization code)
 
 ```python
 # generate explanation for chart
 explanation = lida.explain(code=charts[0].code, summary=summary)
 ```
 
-- **Visualization Evaluation and Repair**: Given a visualization, evaluate to find repair instructions (which may be human authored, or generated), repair the visualization.
+### Visualization Evaluation and Repair
+
+Given a visualization, evaluate to find repair instructions (which may be human authored, or generated), repair the visualization.
 
 ```python
 evaluations = lida.evaluate(code=code,  goal=goals[i], library=library)
 ```
 
-- **Visualization Recommendation**: Given a dataset, generate a set of recommended visualizations.
+### Visualization Recommendation
+
+Given a dataset, generate a set of recommended visualizations.
 
 ```python
 recommendations = lida.recommend(code=code, summary=summary,  textgen_config=textgen_config)
 ```
 
-- **Infographic Generation [TBD]**: Given a dataset, generate a data-faithful infographic. Implementation in progress.
+### Infographic Generation [TBD]
+
+Given a visualization, generate a data-faithful infographic. Implementation in progress.
 
 ## Installation
 
