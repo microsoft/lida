@@ -1,4 +1,6 @@
-
+import logging
+import json
+from lida.utils import clean_code_snippet
 from lida.modules.scaffold import ChartScaffold
 from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
 # from lida.modules.scaffold import ChartScaffold
@@ -6,8 +8,15 @@ from lida.datamodel import Goal, Summary
 
 
 system_prompt = """
-You are a helpful assistant highly skilled in recommending a DIVERSE set of visualizations. Your input is an existing visualization, and  a summary of a dataset and an example visualization goal. Given this input, your task is to recommend an additional DIVERSE visualization that a user may be interesting to a user. Consider different types of valid aggregations, chart types, and use different variables from the data summary. THE CODE YOU GENERATE MUST BE CORRECT AND FOLLOW VISUALIZATION BEST PRACTICES. You MUST return a full program.  DO NOT include any preamble text. Do not include explanations or prose.
+You are a helpful assistant highly skilled in recommending a DIVERSE set of visualizations as code. Your input is an example visualization code,  a summary of a dataset and an example visualization goal. Given this input, your task is to recommend an additional DIVERSE visualizations that a user may be interesting to a user. Consider different types of valid aggregations, chart types, and use different variables from the data summary. THE CODE YOU GENERATE MUST BE CORRECT AND FOLLOW VISUALIZATION BEST PRACTICES.
+
+Your output MUST be perfect JSON in THE FORM OF A VALID JSON LIST without any additional explanation  e.g.,
+
+[{"code": "import ...", "index":0}, .. {"code": "import ...", "index":1} ]
 """
+
+# refactor this to return n predictions ...
+logger = logging.getLogger(__name__)
 
 
 class VizRecommender(object):
@@ -22,6 +31,7 @@ class VizRecommender(object):
             self, code: str, summary: Summary,
             textgen_config: TextGenerationConfig,
             text_gen: TextGenerator,
+            n=3,
             library='altair'):
         """Recommend a code spec based on existing visualization"""
 
@@ -36,12 +46,24 @@ class VizRecommender(object):
             {"role": "system", "content": f"The dataset summary is : {summary}"},
             {"role": "system",
              "content":
-             f"The original visualization code is: {code}.  You MUST use only the {library} library with the following instructions {library_instructions}. The resulting code MUST use the following template {library_template}."},
-            {"role": "user", "content": "Now write code for an additional visualizations that a user may be interested in given the goal and the dataset summary above."}
-
+             f"An example visualization code is: {code}. You MUST use only the {library} library with the following instructions {library_instructions}. Each recommended visualization CODE MUST use the following template {library_template}."},
+            {"role": "user", "content": f"Now write code for {n} visualizations in the JSON list format. YOU MUST RETURN ONLY A JSON LIST"}
         ]
 
         textgen_config.messages = messages
-        completions: TextGenerationResponse = text_gen.generate(
+        result: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)
-        return [x['content'] for x in completions.text]
+        try:
+            json_string = clean_code_snippet(result.text[0]["content"])
+            result = json.loads(json_string)
+            if isinstance(result, dict):
+                result = [result]
+            result = [x["code"] for x in result]
+        except json.decoder.JSONDecodeError:
+            logger.info(
+                f"Error decoding JSON for generated visualization recommendations: {result.text[0]['content']}")
+            print(
+                f"Error decoding JSON for generated visualization recommendations: {result.text[0]['content']}")
+            raise ValueError(
+                "The model did not return a valid JSON object while attempting generate visualization recommendations. Please try again.")
+        return result

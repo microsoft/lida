@@ -41,6 +41,8 @@ def preprocess_code(code: str) -> str:
             code = code[index:]
 
     code = code.replace("```", "")
+    if "chart = plot(data)" not in code:
+        code = code + "\nchart = plot(data)"
     return code
 
 

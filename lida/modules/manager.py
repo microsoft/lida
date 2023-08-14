@@ -219,6 +219,7 @@ class Manager(object):
         self,
         code,
         summary: Summary,
+        n=4,
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
         library: str = "seaborn",
     ):
@@ -237,6 +238,7 @@ class Manager(object):
         return self.recommender.generate(
             code=code,
             summary=summary,
+            n=n,
             textgen_config=textgen_config,
             text_gen=self.text_gen,
             library=library,
