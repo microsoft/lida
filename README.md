@@ -10,8 +10,6 @@
 
 LIDA uses off-the-shelf large language models (OpenAI, PaLM, Cohere, Huggingface) to generate grammar-agnostic visualization specifications and data-faithful infographics.
 
-![lida components](docs/images/lidamodules.jpg)
-
 Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb).
 
 > **Note:**
@@ -20,9 +18,9 @@ Details on the components of LIDA are described in the [paper here](https://arxi
 
 ## Features
 
-LIDA comprises of 4 modules - A SUMMARIZER that converts data into a rich but compact natural language summary, a GOAL EXPLORER that enumerates visualization goals given the data, a VISGENERATOR that generates, refines, executes and filters visualization code and an INFOGRAPHER module (tbd) that yields data-faithful stylized graphics using IGMs. LIDA provides a python api, and a hybrid user interface (direct manipulation and **multilingual** natural language) for interactive chart, infographics and data story generation.
+![lida components](docs/images/lidamodules.jpg)
 
-LIDA treats _**visualizations as code**_. A summary of key features are listed below:
+LIDA treats _**visualizations as code**_ and provides utilities for generating, executing, editing, explaining, evaluating and repairing visualization code.
 
 - [x] Data Summarization
 - [x] Goal Generation
@@ -32,6 +30,23 @@ LIDA treats _**visualizations as code**_. A summary of key features are listed b
 - [x] Visualization Evaluation and Repair
 - [x] Visualization Recommendation
 - [ ] Infographic Generation
+
+## Getting Started
+
+**Verify Environment - Python 3.10+**.
+Setup and verify that your python environment is `python 3.10` or higher (preferably, use [Conda](https://docs.conda.io/en/main/miniconda.html#installing)).
+
+Once requirements are met, setup your api key. Learn more about setting up keys for other LLM providers [here](https://github.com/victordibia/llmx).
+
+```bash
+export OPENAI_API_KEY=<your key>
+```
+
+```bash
+pip install lida
+```
+
+Alternatively you can install the library in dev model by cloning this repo and running `pip install -e .` in the repository root.
 
 ### Data Summarization
 
@@ -98,29 +113,12 @@ evaluations = lida.evaluate(code=code,  goal=goals[i], library=library)
 Given a dataset, generate a set of recommended visualizations.
 
 ```python
-recommendations = lida.recommend(code=code, summary=summary,  textgen_config=textgen_config)
+recommendations = lida.recommend(code=code, summary=summary, n=2,  textgen_config=textgen_config)
 ```
 
 ### Infographic Generation [TBD]
 
 Given a visualization, generate a data-faithful infographic. Implementation in progress.
-
-## Installation
-
-**Verify Environment - Python 3.10+**.
-Setup and verify that your python environment is `python 3.10` or higher (preferably, use [Conda](https://docs.conda.io/en/main/miniconda.html#installing)).
-
-Once requirements are met, setup your api key. Learn more about setting up keys for other LLM providers [here](https://github.com/victordibia/llmx).
-
-```bash
-export OPENAI_API_KEY=<your key>
-```
-
-```bash
-pip install lida
-```
-
-Alternatively you can install the library in dev model by cloning this repo and running `pip install -e .` in the repository root.
 
 ### Web UI
 
@@ -135,6 +133,14 @@ lida ui  --port=8080 --docs
 Then navigate to http://localhost:8080/ in your browser.
 
 Finally, you can call lida from your application via its web api. To view the web api specification, add the `--docs` option to the cli command, and navigate to `http://localhost:8080/api/docs` in your browser.
+
+## Important Notes / Caveats
+
+- LIDA generates and executes code based on provided input. Ensure that you run LIDA in a secure environment with appropriate permissions.
+- LIDA currently works best with datasets that have a small number of columns (<= 10). This is mainly due to the limited context size for most models. For larger datasets, consider preprocessing your dataset to use a subset of the columns.
+- LIDA assumes the dataset exists and is in a format that can be loaded into a pandas dataframe. For example, a csv file, or a json file with a list of objects. In practices the right dataset may need to be curated and preprocessed to ensure that it is suitable for the task at hand.
+
+Naturally, some of these limitations could a much welcomed PR.
 
 ## Documentation and Citation
 
