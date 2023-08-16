@@ -1,5 +1,8 @@
 import typer
 import uvicorn
+import os
+from typing_extensions import Annotated
+from llmx import providers
 
 # from lida.web.backend.app import launch
 
@@ -7,14 +10,19 @@ app = typer.Typer()
 
 
 @app.command()
-def ui(
-    host: str = "127.0.0.1", port: int = 8081, workers: int = 1, reload: bool = True
-):
+def ui(host: str = "127.0.0.1",
+       port: int = 8081,
+       workers: int = 1,
+       reload: Annotated[bool, typer.Option("--reload")] = True,
+       docs: bool = False):
     """
-    Launch the lida UI.Pass in parameters host, port, workers, and reload to override the default values.
+    Launch the lida .Pass in parameters host, port, workers, and reload to override the default values.
     """
+
+    os.environ["LIDA_API_DOCS"] = str(docs)
+
     uvicorn.run(
-        "lida.web.backend.app:app",
+        "lida.web.app:app",
         host=host,
         port=port,
         workers=workers,
@@ -23,8 +31,20 @@ def ui(
 
 
 @app.command()
-def list():
-    print("list")
+def hello(name: Annotated[str, typer.Argument(help="The host to run the server on.")] = "None"):
+    if name:
+        typer.echo(f"Hello {name}")
+    else:
+        typer.echo("Hello World!")
+
+
+@app.command()
+def models():
+    print("A list of supported providers:")
+    for provider in providers.items():
+        print(f"Provider: {provider[1]['name']}")
+        for model in provider[1]["models"]:
+            print(f"  - {model['name']}")
 
 
 def run():

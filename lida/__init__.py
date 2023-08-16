@@ -1,1 +1,1 @@
-from llmx import TextGenerationConfig, text_generator, TextGenerator
+from llmx import TextGenerationConfig, llm, TextGenerator

@@ -1,5 +1,5 @@
 # __init__.py
 
-"""Hand web backend API for lida.
+"""Handle web backend API for lida.
  """
  

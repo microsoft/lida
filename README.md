@@ -1,42 +1,65 @@
 # LIDA: Automatic Generation of Visualizations and Infographics using Large Language Models
 
-<!-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](#) -->
-<!-- image  -->
+[![PyPI version](https://badge.fury.io/py/lida.svg)](https://badge.fury.io/py/lida)
+[![arXiv](https://img.shields.io/badge/arXiv-2303.02927-<COLOR>.svg)](https://arxiv.org/abs/2303.02927)
+<a target="_blank" href="https://colab.research.google.com/github/microsoft/lida/blob/main/notebooks/tutorial.ipynb">
+<img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
 
-LIDA uses off-the-shelf large language models to generate grammar-agnostic visualization specifications and data-faithful infographics.
+<!-- <img src="docs/images/lidascreen.png" width="100%" /> -->
 
-> **Important Note on Code Execution**: To generate visualizations, LIDA _generates_ and _executes_ code. Ensure that you run LIDA in a secure environment. Acknowledge this by setting the environment variable `LIDA_ALLOW_CODE_EVAL=1`
+LIDA is a library for generating data visualizations and data-faithful infographics. LIDA is grammar agnostic (will work with any programming language and visualization libraries e.g. matplotlib, seaborn, altair, d3 etc) and works with multiple large language model providers (OpenAI, PaLM, Cohere, Huggingface). Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb).
 
-## How it works
+> **Note on Code Execution:**
+> To create visualizations, LIDA _generates_ and _executes_ code.
+> Ensure that you run LIDA in a secure environment.
 
-LIDA comprises of 4 modules - A SUMMARIZER that converts data into a rich but compact natural language summary, a GOAL EXPLORER that enumerates visualization goals given the data, a VISGENERATOR that generates, refines, executes and filters visualization code and an INFOGRAPHER module that yields data-faithful stylized graphics using IGMs. LIDA provides a python api, and a hybrid user interface (direct manipulation and **multilingual** natural language) for interactive chart, infographics and data story generation.
+## Features
 
 ![lida components](docs/images/lidamodules.jpg)
 
-Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927).
+LIDA treats _**visualizations as code**_ and provides utilities for generating, executing, editing, explaining, evaluating and repairing visualization code.
 
-## Requirements and Installation
+- [x] Data Summarization
+- [x] Goal Generation
+- [x] Visualization Generation
+- [x] Visualization Editing
+- [x] Visualization Explanation
+- [x] Visualization Evaluation and Repair
+- [x] Visualization Recommendation
+- [x] Infographic Generation (beta)
 
-**Verify Environment - Python 3.10+**.
-Setup and verify that your python environment is `python 3.10` or higher (preferably, use Conda).
+## Getting Started
 
-Once requirements are met, run the following command to install the library in the repository root:
+Setup and verify that your python environment is **`python 3.10`** or higher (preferably, use [Conda](https://docs.conda.io/en/main/miniconda.html#installing)). Install the library via pip.
 
-Setup your openai api key
+```bash
+pip install lida
+```
+
+Once requirements are met, setup your api key. Learn more about setting up keys for other LLM providers [here](https://github.com/victordibia/llmx).
 
 ```bash
 export OPENAI_API_KEY=<your key>
 ```
 
+Alternatively you can install the library in dev model by cloning this repo and running `pip install -e .` in the repository root.
+
+## Web API and UI
+
+LIDA comes with an optional bundled ui and web api that you can explore by running the following command:
+
 ```bash
-pip install -e .
+lida ui  --port=8080 --docs
 ```
 
-## Python API
+Then navigate to http://localhost:8080/ in your browser. To view the web api specification, add the `--docs` option to the cli command, and navigate to `http://localhost:8080/api/docs` in your browser.
 
-LIDA provides a `python` api for generating visualizations and infographics - data summary generation, visualization goals, visualization generation, visualization editing.
+The fastest and recommended way to get started after installation will be to try out the web ui above or run the [tutorial notebook](notebooks/tutorial.ipynb).
 
 ### Data Summarization
+
+Given a dataset, generate a compact summary of the data.
 
 ```python
 from lida.modules import Manager
@@ -45,51 +68,78 @@ lida = Manager()
 summary = lida.summarize("data/cars.json") # generate data summary
 ```
 
-### Visualization Goal Generation
+### Goal Generation
+
+Generate a set of visualization goals given a data summary.
 
 ```python
-goals = lida.generate_goals(summary, n=5) # generate goals
+goals = lida.goals(summary, n=5) # generate goals
 ```
 
 ### Visualization Generation
 
-```python
-# generate altair charts
-vis_specs = lida.generate_viz(summary=summary, goal=goals[0], library="matplotlib") # altair, matplotlib etc
+Generate, refine, execute and filter visualization code given a data summary and visualization goal. Note that LIDA represents **visualizations as code**.
 
-# execute charts - returns altair chart objects
-charts = lida.execute_viz(code_specs=vis_specs)
+```python
+# generate code specifications for charts
+vis_specs = lida.visualize(summary=summary, goal=goals[0], library="matplotlib") # seaborn, ggplot ..
+
+# execute code
+charts = lida.execute(code_specs=vis_specs)
 ```
 
 ### Visualization Editing
 
+Given a visualization, edit the visualization using natural language.
+
 ```python
 # modify chart using natural language
 instructions = ["convert this to a bar chart", "change the color to red", "change y axes label to Fuel Efficiency"]
-vis_specs = lida.edit_viz(code=charts[0].code,  summary=summary, instructions=instructions, library="matplotlib")
-edited_chartspecs = lida.execute_viz(code_specs=vis_specs, data=manager.data)
+vis_specs = lida.edit(code=charts[0].code,  summary=summary, instructions=instructions)
+edited_chartspecs = lida.execute(code_specs=vis_specs, data=manager.data)
 
 ```
 
-## Getting Started
+### Visualization Explanation
 
-The fastest and recommended way to get started after installation will be to try out the web ui or run the [tutorial notebook](notebooks/tutorial.ipynb).
+Given a visualization, generate a natural language explanation of the visualization code (accessibility, data transformations applied, visualization code)
 
-### Web UI
-
-You can use the library from the ui by running the following command:
-
-```bash
-lida ui  --port=8080
+```python
+# generate explanation for chart
+explanation = lida.explain(code=charts[0].code, summary=summary)
 ```
 
-Then navigate to http://localhost:8080/ in your browser.
+### Visualization Evaluation and Repair
 
-Finally, you can call lida from your application via its web api. To view the web api specification, navigate to `http://localhost:8080/api/docs` in your browser.
+Given a visualization, evaluate to find repair instructions (which may be human authored, or generated), repair the visualization.
 
-### Tutorial Notebook
+```python
+evaluations = lida.evaluate(code=code,  goal=goals[i], library=library)
+```
 
-Learn more about the python api in this [tutorial notebook](/notebooks/tutorial.ipynb).
+### Visualization Recommendation
+
+Given a dataset, generate a set of recommended visualizations.
+
+```python
+recommendations = lida.recommend(code=code, summary=summary, n=2,  textgen_config=textgen_config)
+```
+
+### Infographic Generation [TBD]
+
+Given a visualization, generate a data-faithful infographic. Implementation in progress. This methods should be considered experimental, and uses stable diffusion models from huggingface underneath. You will need to run `pip install lida[infographics]` to install the required dependencies.
+
+```python
+infographics = lida.infographics(visualization = charts[0].raster, n=3, style_prompt="line art")
+```
+
+## Important Notes / Caveats
+
+- LIDA generates and executes code based on provided input. Ensure that you run LIDA in a secure environment with appropriate permissions.
+- LIDA currently works best with datasets that have a small number of columns (<= 10). This is mainly due to the limited context size for most models. For larger datasets, consider preprocessing your dataset to use a subset of the columns.
+- LIDA assumes the dataset exists and is in a format that can be loaded into a pandas dataframe. For example, a csv file, or a json file with a list of objects. In practices the right dataset may need to be curated and preprocessed to ensure that it is suitable for the task at hand.
+
+Naturally, some of these limitations could a much welcomed PR.
 
 ## Documentation and Citation
 

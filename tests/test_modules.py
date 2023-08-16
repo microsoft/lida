@@ -1,8 +1,7 @@
-from lida import TextGenerationConfig, text_generator
-from lida.modules import Manager
+from lida import TextGenerationConfig, llm
+from lida.components import Manager
 
-
-lida = Manager(text_gen=text_generator("openai"))
+lida = Manager(text_gen=llm("openai"))
 
 
 cars_data_url = "https://raw.githubusercontent.com/uwdata/draco/master/data/cars.csv"
@@ -13,7 +12,7 @@ def test_summarizer():
     summary_no_enrich = lida.summarize(cars_data_url, enrich=False)
     summary = lida.summarize(
         "https://raw.githubusercontent.com/uwdata/draco/master/data/cars.csv",
-        textgen_config=textgen_config)
+        textgen_config=textgen_config, enrich=True)
 
     assert summary_no_enrich != summary
     assert "dataset_description" in summary and len(summary["dataset_description"]) > 0
@@ -25,7 +24,7 @@ def test_goals():
         cars_data_url,
         textgen_config=textgen_config, enrich=False)
 
-    goals = lida.generate_goals(summary, n=2, textgen_config=textgen_config)
+    goals = lida.goals(summary, n=2, textgen_config=textgen_config)
     assert len(goals) == 2
     assert len(goals[0].question) > 0
 
@@ -40,13 +39,13 @@ def test_vizgen():
         cars_data_url,
         textgen_config=textgen_config, enrich=False)
 
-    goals = lida.generate_goals(summary, n=2, textgen_config=textgen_config)
-    vis_specs = lida.generate_viz(
+    goals = lida.goals(summary, n=2, textgen_config=textgen_config)
+    vis_specs = lida.visualize(
         summary=summary,
         goal=goals[0],
         textgen_config=textgen_config,
         library="seaborn")
-    charts = lida.execute_viz(
+    charts = lida.execute(
         code_specs=vis_specs,
         data=lida.data,
         summary=summary,
