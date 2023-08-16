@@ -8,11 +8,9 @@
 
 <!-- <img src="docs/images/lidascreen.png" width="100%" /> -->
 
-LIDA uses off-the-shelf large language models (OpenAI, PaLM, Cohere, Huggingface) to generate grammar-agnostic visualization specifications and data-faithful infographics.
+LIDA is a library for generating data visualizations and data-faithful infographics. LIDA is grammar agnostic (will work with any programming language and visualization libraries e.g. matplotlib, seaborn, altair, d3 etc) and works with multiple large language model providers (OpenAI, PaLM, Cohere, Huggingface). Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb).
 
-Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb).
-
-> **Note:**
+> **Note on Code Execution:**
 > To create visualizations, LIDA _generates_ and _executes_ code.
 > Ensure that you run LIDA in a secure environment.
 
@@ -29,12 +27,15 @@ LIDA treats _**visualizations as code**_ and provides utilities for generating, 
 - [x] Visualization Explanation
 - [x] Visualization Evaluation and Repair
 - [x] Visualization Recommendation
-- [ ] Infographic Generation
+- [x] Infographic Generation (beta)
 
 ## Getting Started
 
-**Verify Environment - Python 3.10+**.
-Setup and verify that your python environment is `python 3.10` or higher (preferably, use [Conda](https://docs.conda.io/en/main/miniconda.html#installing)).
+Setup and verify that your python environment is **`python 3.10`** or higher (preferably, use [Conda](https://docs.conda.io/en/main/miniconda.html#installing)). Install the library via pip.
+
+```bash
+pip install lida
+```
 
 Once requirements are met, setup your api key. Learn more about setting up keys for other LLM providers [here](https://github.com/victordibia/llmx).
 
@@ -42,11 +43,19 @@ Once requirements are met, setup your api key. Learn more about setting up keys 
 export OPENAI_API_KEY=<your key>
 ```
 
+Alternatively you can install the library in dev model by cloning this repo and running `pip install -e .` in the repository root.
+
+## Web API and UI
+
+LIDA comes with an optional bundled ui and web api that you can explore by running the following command:
+
 ```bash
-pip install lida
+lida ui  --port=8080 --docs
 ```
 
-Alternatively you can install the library in dev model by cloning this repo and running `pip install -e .` in the repository root.
+Then navigate to http://localhost:8080/ in your browser. To view the web api specification, add the `--docs` option to the cli command, and navigate to `http://localhost:8080/api/docs` in your browser.
+
+The fastest and recommended way to get started after installation will be to try out the web ui above or run the [tutorial notebook](notebooks/tutorial.ipynb).
 
 ### Data Summarization
 
@@ -118,21 +127,11 @@ recommendations = lida.recommend(code=code, summary=summary, n=2,  textgen_confi
 
 ### Infographic Generation [TBD]
 
-Given a visualization, generate a data-faithful infographic. Implementation in progress.
+Given a visualization, generate a data-faithful infographic. Implementation in progress. This methods should be considered experimental, and uses stable diffusion models from huggingface underneath. You will need to run `pip install lida[infographics]` to install the required dependencies.
 
-### Web UI
-
-The fastest and recommended way to get started after installation will be to try out the web ui or run the [tutorial notebook](notebooks/tutorial.ipynb).
-
-You can use the library from the bundled ui by running the following command:
-
-```bash
-lida ui  --port=8080 --docs
+```python
+infographics = lida.infographics(visualization = charts[0].raster, n=3, style_prompt="line art")
 ```
-
-Then navigate to http://localhost:8080/ in your browser.
-
-Finally, you can call lida from your application via its web api. To view the web api specification, add the `--docs` option to the cli command, and navigate to `http://localhost:8080/api/docs` in your browser.
 
 ## Important Notes / Caveats
 
