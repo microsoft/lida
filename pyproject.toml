@@ -10,7 +10,7 @@ authors = [
 description = "LIDA: Automatic Generation of Visualizations from Data"
 readme = "README.md"
 license = { file="LICENSE" }
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -40,7 +40,7 @@ dependencies = [
     "basemap",
     "basemap-data-hires"
 ]
-optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]>=4.26"], tools=["geopy"]}
+optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]>=4.26"], tools=["geopy"], infographics=["peacasso"]}
 
 dynamic = ["version"]
 

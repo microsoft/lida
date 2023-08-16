@@ -9,7 +9,7 @@ import traceback
 
 from llmx import llm, providers
 from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRecommendRequest, VisualizeRepairWebRequest, VisualizeWebRequest
-from ..modules import Manager
+from ..components import Manager
 
 
 # instantiate model and generator

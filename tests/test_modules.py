@@ -1,6 +1,5 @@
 from lida import TextGenerationConfig, llm
-from lida.modules import Manager
-
+from lida.components import Manager
 
 lida = Manager(text_gen=llm("openai"))
 
@@ -25,7 +24,7 @@ def test_goals():
         cars_data_url,
         textgen_config=textgen_config, enrich=False)
 
-    goals = lida.generate_goals(summary, n=2, textgen_config=textgen_config)
+    goals = lida.goals(summary, n=2, textgen_config=textgen_config)
     assert len(goals) == 2
     assert len(goals[0].question) > 0
 
