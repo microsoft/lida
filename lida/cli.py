@@ -31,14 +31,6 @@ def ui(host: str = "127.0.0.1",
 
 
 @app.command()
-def hello(name: Annotated[str, typer.Argument(help="The host to run the server on.")] = "None"):
-    if name:
-        typer.echo(f"Hello {name}")
-    else:
-        typer.echo("Hello World!")
-
-
-@app.command()
 def models():
     print("A list of supported providers:")
     for provider in providers.items():

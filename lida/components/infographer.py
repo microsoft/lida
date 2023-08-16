@@ -52,10 +52,9 @@ class Infographer():
             return_intermediates=False,
             seed=2147483647,
             use_prompt_weights=False,
-            negative_prompt="text, background shapes or lines, title",
+            negative_prompt="text, background shapes or lines, title, words, characters, titles, letters",
             strength=0.6,
-            filter_nsfw=False
-        )
+            filter_nsfw=False)
 
         result = self.model.generate(gen_config)
         if not return_pil:

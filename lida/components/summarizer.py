@@ -4,8 +4,8 @@ from typing import Union
 import pandas as pd
 from lida.utils import clean_code_snippet, read_dataframe
 from lida.datamodel import TextGenerationConfig
-from lida import TextGenerator
-
+from llmx import TextGenerator
+import warnings
 
 system_prompt = """
 You are a an experienced data analyst that can annotate datasets. Your instructions are as follows:
@@ -48,8 +48,10 @@ class Summarizer():
             elif dtype == object:
                 # Check if the string column can be cast to a valid datetime
                 try:
-                    pd.to_datetime(df[column], errors='raise')
-                    properties["dtype"] = "date"
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        pd.to_datetime(df[column], errors='raise')
+                        properties["dtype"] = "date"
                 except ValueError:
                     # Check if the string column has a limited number of values
                     if df[column].nunique() / len(df[column]) < 0.5:
@@ -111,9 +113,11 @@ class Summarizer():
             raise ValueError(error_msg + "" + response.usage)
         return enriched_summary
 
-    def summarize(self, data: Union[pd.DataFrame, str], text_gen: TextGenerator,
-                  file_name="", n_samples: int = 3, enrich: bool = True,
-                  textgen_config=TextGenerationConfig(n=1)) -> dict:
+    def summarize(
+            self, data: Union[pd.DataFrame, str],
+            text_gen: TextGenerator, file_name="", n_samples: int = 3,
+            textgen_config=TextGenerationConfig(n=1),
+            summary_method: str = "default") -> dict:
         """Summarize data from a pandas DataFrame or a file location"""
 
         # if data is a file path, read it into a pandas DataFrame, set file_name to the file name
@@ -121,6 +125,8 @@ class Summarizer():
             file_name = data.split("/")[-1]
             data = read_dataframe(data)
         data_properties = self.get_column_properties(data, n_samples)
+
+        # first stage in summary construction
         base_summary = {
             "name": file_name,
             "file_name": file_name,
@@ -128,11 +134,21 @@ class Summarizer():
             "fields": data_properties,
         }
         data_summary = base_summary
-        if enrich:
+
+        if summary_method == "llm":
+            # two stage summarization with llm enrichment
             data_summary = self.encrich(
                 base_summary,
                 text_gen=text_gen,
                 textgen_config=textgen_config)
+        elif summary_method == "columns":
+            # no enrichment, only column names
+            data_summary = {
+                "name": file_name,
+                "file_name": file_name,
+                "dataset_description": ""
+            }
+
         data_summary["field_names"] = data.columns.tolist()
         data_summary["file_name"] = file_name
 

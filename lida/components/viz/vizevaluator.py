@@ -1,4 +1,6 @@
 
+import json
+from ...utils import clean_code_snippet
 from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
 
 from lida.datamodel import Goal
@@ -14,8 +16,10 @@ You are a helpful assistant highly skilled in evaluating the quality of a given 
 
 You must provide a score for each of the above dimensions.  Assume that data in chart = plot(data) contains a valid dataframe for the dataset. The `plot` function returns a chart (e.g., matplotlib, seaborn etc object).
 
-Your output MUST be perfect JSON in THE FORM OF A VALID PYTHON LIST OF DICTIONARIES e.g.,
-[ { "dimension":  "bugs",  "score": 1, "rationale": " .."}, { "dimension":  "type",  "score": 1, "rationale": " .."},  ..]
+Your OUTPUT MUST BE ONLY A CODE SNIPPET of a JSON LIST in the format:
+```
+[{ "dimension":  "bugs",  "score": 1, "rationale": " .."}, { "dimension":  "type",  "score": 1, "rationale": " .."},  ..]
+```
 """
 
 
@@ -38,7 +42,15 @@ class VizEvaluator(object):
         ]
 
         # print(messages)
-
         completions: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)
-        return [x['content'] for x in completions.text]
+
+        completions = [clean_code_snippet(x['content']) for x in completions.text]
+        evaluations = []
+        for completion in completions:
+            try:
+                evaluation = json.loads(completion)
+                evaluations.append(evaluation)
+            except Exception as json_error:
+                print("Error parsing evaluation data", completion, str(json_error))
+        return evaluations

@@ -10,9 +10,10 @@ from lida.datamodel import Goal, Summary
 system_prompt = """
 You are a helpful assistant highly skilled in recommending a DIVERSE set of visualizations as code. Your input is an example visualization code,  a summary of a dataset and an example visualization goal. Given this input, your task is to recommend an additional DIVERSE visualizations that a user may be interesting to a user. Consider different types of valid aggregations, chart types, and use different variables from the data summary. THE CODE YOU GENERATE MUST BE CORRECT AND FOLLOW VISUALIZATION BEST PRACTICES.
 
-Your output MUST be perfect JSON in THE FORM OF A VALID JSON LIST without any additional explanation  e.g.,
-
+Your output MUST be perfect JSON snippet in THE FORM OF A VALID JSON LIST without any additional explanation  e.g.,
+```
 [{"code": "import ...", "index":0}, .. {"code": "import ...", "index":1} ]
+```
 """
 
 # refactor this to return n predictions ...

@@ -32,7 +32,7 @@ class VizGenerator(object):
             {"role": "system", "content": f"Use the code template below \n {library_template}. DO NOT modify the rest of the code template."},
             {"role": "user",
              "content":
-             "Always add a legend with various colors where appropriate. Note that data in the plot(data) method is a pandas Dataframe that already contains the data. The visualization code MUST only use data fields that exist in the dataset (field_names) or fields that are transformations based on existing field_names). Only use variables that have been defined in the code or are in the dataset summary. You MUST return a full python code program that starts with an import statement. DO NOT add any explanation"}]
+             "Always add a legend with various colors where appropriate. The visualization code MUST only use data fields that exist in the dataset (field_names) or fields that are transformations based on existing field_names). Only use variables that have been defined in the code or are in the dataset summary. You MUST return a full python code program that starts with an import statement. DO NOT add any explanation"}]
 
         # print(textgen_config.messages)
         completions: TextGenerationResponse = text_gen.generate(

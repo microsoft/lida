@@ -42,7 +42,13 @@ class Manager(object):
     def check_textgen(self, config: TextGenerationConfig):
         """Check if self.text_gen is the same as the config passed in. If not, update self.text_gen"""
 
+        if config.provider is None:
+            config.provider = self.text_gen.provider
+            return
+
         if self.text_gen.provider != config.provider:
+            print(
+                f"Switchging Text Generator Provider from {self.text_gen.provider} to {config.provider}")
             logger.info(
                 f"Switchging Text Generator Provider from {self.text_gen.provider} to {config.provider}")
             self.text_gen = llm(provider=config.provider)
@@ -52,7 +58,7 @@ class Manager(object):
         data: Union[pd.DataFrame, str],
         file_name="",
         n_samples: int = 3,
-        enrich: bool = False,
+        summary_method: str = "default",
         textgen_config: TextGenerationConfig = TextGenerationConfig(n=1, temperature=0),
     ):
 
@@ -66,7 +72,7 @@ class Manager(object):
         # self.data = data
         return self.summarizer.summarize(
             data=self.data, text_gen=self.text_gen, file_name=file_name, n_samples=n_samples,
-            enrich=enrich, textgen_config=textgen_config)
+            summary_method=summary_method, textgen_config=textgen_config)
 
     def goals(
             self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
@@ -82,12 +88,21 @@ class Manager(object):
         goal,
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
         library="seaborn",
+        return_error: bool = False,
     ):
 
         self.check_textgen(config=textgen_config)
-        return self.vizgen.generate(
+        code_specs = self.vizgen.generate(
             summary=summary, goal=goal, textgen_config=textgen_config, text_gen=self.text_gen,
             library=library)
+        charts = self.execute(
+            code_specs=code_specs,
+            data=self.data,
+            summary=summary,
+            library=library,
+            return_error=return_error,
+        )
+        return charts
 
     def execute(
         self,
@@ -122,6 +137,7 @@ class Manager(object):
         instructions: List[str],
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
         library: str = "seaborn",
+        return_error: bool = False,
     ):
         """Edit a visualization code given a set of instructions
 
@@ -138,7 +154,7 @@ class Manager(object):
         if isinstance(instructions, str):
             instructions = [instructions]
 
-        return self.vizeditor.generate(
+        code_specs = self.vizeditor.generate(
             code=code,
             summary=summary,
             instructions=instructions,
@@ -146,6 +162,15 @@ class Manager(object):
             text_gen=self.text_gen,
             library=library,
         )
+
+        charts = self.execute(
+            code_specs=code_specs,
+            data=self.data,
+            summary=summary,
+            library=library,
+            return_error=return_error,
+        )
+        return charts
 
     def repair(
         self,
@@ -155,10 +180,11 @@ class Manager(object):
         feedback,
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
         library: str = "seaborn",
+        return_error: bool = False,
     ):
         """ Repair a visulization given some feedback"""
         self.check_textgen(config=textgen_config)
-        return self.repairer.generate(
+        code_specs = self.repairer.generate(
             code=code,
             feedback=feedback,
             goal=goal,
@@ -167,6 +193,14 @@ class Manager(object):
             text_gen=self.text_gen,
             library=library,
         )
+        charts = self.execute(
+            code_specs=code_specs,
+            data=self.data,
+            summary=summary,
+            library=library,
+            return_error=return_error,
+        )
+        return charts
 
     def explain(
         self,
@@ -225,6 +259,7 @@ class Manager(object):
         n=4,
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
         library: str = "seaborn",
+        return_error: bool = False,
     ):
         """Edit a visualization code given a set of instructions
 
@@ -238,7 +273,7 @@ class Manager(object):
 
         self.check_textgen(config=textgen_config)
 
-        return self.recommender.generate(
+        code_specs = self.recommender.generate(
             code=code,
             summary=summary,
             n=n,
@@ -246,6 +281,14 @@ class Manager(object):
             text_gen=self.text_gen,
             library=library,
         )
+        charts = self.execute(
+            code_specs=code_specs,
+            data=self.data,
+            summary=summary,
+            library=library,
+            return_error=return_error,
+        )
+        return charts
 
     def infographics(self, visualization: str, n: int = 1,
                      style_prompt: Union[str, List[str]] = "",

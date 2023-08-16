@@ -17,7 +17,6 @@ textgen = llm()
 logger = logging.getLogger(__name__)
 api_docs = os.environ.get("LIDA_API_DOCS", "False") == "True"
 
-print("Api docs ... ", api_docs)
 
 lida = Manager(text_gen=textgen)
 app = FastAPI()
@@ -54,17 +53,11 @@ async def visualize_data(req: VisualizeWebRequest) -> dict:
     """Generate goals given a dataset summary"""
     try:
         # print(req.textgen_config)
-        code_specs = lida.visualize(
+        charts = lida.visualize(
             summary=req.summary,
             goal=req.goal,
             textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(),
-            library=req.library)
-        charts = lida.execute(
-            code_specs=code_specs,
-            data=lida.data,
-            summary=req.summary,
-            library=req.library,
-            return_error=True)
+            library=req.library, return_error=True)
         print("found charts: ", len(charts), " for goal: ")
         if len(charts) == 0:
             return {"status": False, "message": "No charts generated"}
@@ -82,19 +75,13 @@ async def edit_visualization(req: VisualizeEditWebRequest) -> dict:
     """Given a visualization code, and a goal, generate a new visualization"""
     try:
         textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig()
-        code_specs = lida.edit(
+        charts = lida.edit(
             code=req.code,
             summary=req.summary,
             instructions=req.instructions,
             textgen_config=textgen_config,
-            library=req.library)
+            library=req.library, return_error=True)
 
-        charts = lida.execute(
-            code_specs=code_specs,
-            data=lida.data,
-            summary=req.summary,
-            library=req.library,
-            return_error=True)
         # charts = [asdict(chart) for chart in charts]
         if len(charts) == 0:
             return {"status": False, "message": "No charts generated"}
@@ -114,21 +101,16 @@ async def repair_visualization(req: VisualizeRepairWebRequest) -> dict:
 
     try:
 
-        code_specs = lida.repair(
+        charts = lida.repair(
             code=req.code,
             feedback=req.feedback,
             goal=req.goal,
             summary=req.summary,
             textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(),
-            library=req.library)
-
-        charts = lida.execute(
-            code_specs=code_specs,
-            data=lida.data,
-            summary=req.summary,
             library=req.library,
-            return_error=True)
-        # charts = [asdict(chart) for chart in charts]
+            return_error=True
+        )
+
         if len(charts) == 0:
             return {"status": False, "message": "No charts generated"}
         return {"status": True, "charts": charts,
@@ -146,7 +128,7 @@ async def explain_visualization(req: VisualizeExplainWebRequest) -> dict:
     textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
         n=1,
         temperature=0)
-    print("textgen_config: ", req.textgen_config)
+
     try:
         explanations = lida.explain(
             code=req.code,
@@ -172,19 +154,14 @@ async def evaluate_visualization(req: VisualizeEvalWebRequest) -> dict:
             textgen_config=req.textgen_config if req.textgen_config else TextGenerationConfig(
                 n=1,
                 temperature=0),
-            library=req.library)
-        try:
-            evaluations = json.loads(evaluations[0])
-        except BaseException:
-            print("Error parsing evaluation JSON data", evaluations)
-            return {"status": False, "message": "Error parsing evaluation JSON data"}
+            library=req.library)[0]
         return {"status": True, "evaluations": evaluations,
                 "message": "Successfully generated evaluation"}
 
     except Exception as exception_error:
         logger.error(f"Error generating visualization evaluation: {str(exception_error)}")
         return {"status": False,
-                "message": f"Error generating visualization evaluation."}
+                "message": f"Error generating visualization evaluation. {str(exception_error)}"}
 
 
 @api.post("/visualize/recommend")
@@ -193,18 +170,13 @@ async def recommend_visualization(req: VisualizeRecommendRequest) -> dict:
 
     try:
         textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig()
-        code_specs = lida.recommend(
+        charts = lida.recommend(
             summary=req.summary,
             code=req.code,
             textgen_config=textgen_config,
-            library=req.library)
-        charts = lida.execute(
-            code_specs=code_specs,
-            data=lida.data,
-            summary=req.summary,
             library=req.library,
             return_error=True)
-        # charts = [asdict(chart) for chart in charts]
+
         if len(charts) == 0:
             return {"status": False, "message": "No charts generated"}
         return {"status": True, "charts": charts,
@@ -267,7 +239,7 @@ async def upload_file(file: UploadFile):
         summary = lida.summarize(
             data=file_location,
             file_name=file.filename,
-            enrich=True,
+            summary_method="default",
             textgen_config=textgen_config)
         return {"status": True, "summary": summary, "data_filename": file.filename}
     except Exception as exception_error:

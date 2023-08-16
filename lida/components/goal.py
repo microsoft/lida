@@ -5,7 +5,7 @@ from llmx import TextGenerator
 from lida.datamodel import Goal, TextGenerationConfig
 
 
-system_prompt = """You are a an experienced data analyst as well as visualization specialist who can  insightful GOALS about data, when given a summary of the data. The VISUALIZATIONS YOU RECOMMEND MUST FOLLOW VISUALIZATION BEST PRACTICES (e.g., must use bar charts instead of pie charts for comparing quantities) AND BE MEANINGFUL (e.g., plot longitude and latitude on maps where appropriate).
+system_prompt = """You are a an experienced data analyst as well as visualization specialist who can generate a given number of insightful GOALS about data, when given a summary of the data. The VISUALIZATIONS YOU RECOMMEND MUST FOLLOW VISUALIZATION BEST PRACTICES (e.g., must use bar charts instead of pie charts for comparing quantities) AND BE MEANINGFUL (e.g., plot longitude and latitude on maps where appropriate).
 
 The GOALS that you recommend must mention the exact fields from the dataset summary above. Your OUTPUT MUST BE ONLY A CODE SNIPPET of a JSON LIST in the format:
 ```[{ "index": 0,  "question": "What is the distribution of X", "visualization": "histogram of X", "rationale": "This tells about "}, .. ]
@@ -25,8 +25,8 @@ class GoalExplorer():
                  text_gen: TextGenerator, n=5) -> list[Goal]:
         """Generate goals given a summary of data"""
 
-        user_prompt = f"""Generate {n} GOALS in the right format given the data summary below, \n .
-        {summary} \n """ + """
+        user_prompt = f"""The number of GOALS to generate is {n}. Generate {n} GOALS in the right format given the data summary below,\n .
+        {summary} \n""" + """
 
         .
         """

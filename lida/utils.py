@@ -1,9 +1,10 @@
 import base64
 import json
 import logging
-from typing import Any, List
+from typing import Any, List, Union
 import os
 import io
+import numpy as np
 import pandas as pd
 import re
 import matplotlib.pyplot as plt
@@ -99,12 +100,46 @@ def file_to_df(file_location: str):
     return df
 
 
-def plot_raster(raster, figsize=(10, 10)):
+def plot_raster(rasters: Union[str, List[str]], figsize=(10, 10)):
     plt.figure(figsize=figsize)
-    decoded_image = base64.b64decode(raster)
-    image_buffer = io.BytesIO(decoded_image)
-    image = plt.imread(image_buffer)
-    plt.imshow(image)
+
+    if isinstance(rasters, str):
+        rasters = [rasters]
+
+    images = []
+    max_height = 0
+
+    # Load images, convert to RGB if needed, and find the maximum height
+    for raster in rasters:
+        decoded_image = base64.b64decode(raster)
+        image_buffer = io.BytesIO(decoded_image)
+        image = plt.imread(image_buffer)
+
+        # Convert RGBA images to RGB
+        if image.shape[2] == 4:
+            image = image[:, :, :3]
+
+        images.append(image)
+        max_height = max(max_height, image.shape[0])
+
+    # Pad images with white color if needed
+    padded_images = []
+    for image in images:
+        if image.shape[0] < max_height:
+            padding = np.full((max_height - image.shape[0], image.shape[1], image.shape[2]), 255)
+            padded_image = np.vstack((image, padding))
+        else:
+            padded_image = image
+        padded_images.append(padded_image)
+
+    # Concatenate images horizontally and normalize image data
+    concatenated_image = np.concatenate(padded_images, axis=1)
+    if concatenated_image.dtype == np.float32 or concatenated_image.dtype == np.float64:
+        concatenated_image = np.clip(concatenated_image, 0, 1)
+    else:
+        concatenated_image = np.clip(concatenated_image, 0, 255)
+
+    plt.imshow(concatenated_image)
     plt.axis('off')
     plt.box(False)
     plt.show()
