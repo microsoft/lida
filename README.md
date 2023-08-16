@@ -81,11 +81,8 @@ goals = lida.goals(summary, n=5) # generate goals
 Generate, refine, execute and filter visualization code given a data summary and visualization goal. Note that LIDA represents **visualizations as code**.
 
 ```python
-# generate code specifications for charts
-vis_specs = lida.visualize(summary=summary, goal=goals[0], library="matplotlib") # seaborn, ggplot ..
-
-# execute code
-charts = lida.execute(code_specs=vis_specs)
+# generate charts (generate and execute visualization code)
+charts = lida.visualize(summary=summary, goal=goals[0], library="matplotlib") # seaborn, ggplot ..
 ```
 
 ### Visualization Editing
@@ -94,9 +91,8 @@ Given a visualization, edit the visualization using natural language.
 
 ```python
 # modify chart using natural language
-instructions = ["convert this to a bar chart", "change the color to red", "change y axes label to Fuel Efficiency"]
-vis_specs = lida.edit(code=charts[0].code,  summary=summary, instructions=instructions)
-edited_chartspecs = lida.execute(code_specs=vis_specs, data=manager.data)
+instructions = ["convert this to a bar chart", "change the color to red", "change y axes label to Fuel Efficiency", "translate the title to french"]
+edited_charts = lida.edit(code=code,  summary=summary, instructions=instructions, library=library, textgen_config=textgen_config)
 
 ```
 
@@ -125,9 +121,9 @@ Given a dataset, generate a set of recommended visualizations.
 recommendations = lida.recommend(code=code, summary=summary, n=2,  textgen_config=textgen_config)
 ```
 
-### Infographic Generation [TBD]
+### Infographic Generation [WIP]
 
-Given a visualization, generate a data-faithful infographic. Implementation in progress. This methods should be considered experimental, and uses stable diffusion models from huggingface underneath. You will need to run `pip install lida[infographics]` to install the required dependencies.
+Given a visualization, generate a data-faithful infographic. This methods should be considered experimental, and uses stable diffusion models from the [peacasso](https://github.com/victordibia/peacasso) library. You will need to run `pip install lida[infographics]` to install the required dependencies.
 
 ```python
 infographics = lida.infographics(visualization = charts[0].raster, n=3, style_prompt="line art")
@@ -138,6 +134,7 @@ infographics = lida.infographics(visualization = charts[0].raster, n=3, style_pr
 - LIDA generates and executes code based on provided input. Ensure that you run LIDA in a secure environment with appropriate permissions.
 - LIDA currently works best with datasets that have a small number of columns (<= 10). This is mainly due to the limited context size for most models. For larger datasets, consider preprocessing your dataset to use a subset of the columns.
 - LIDA assumes the dataset exists and is in a format that can be loaded into a pandas dataframe. For example, a csv file, or a json file with a list of objects. In practices the right dataset may need to be curated and preprocessed to ensure that it is suitable for the task at hand.
+- Smaller LLMs (e.g., OSS LLMs on Huggingface) have limited instruction following capabilities and may not work well with LIDA. LIDA works best with larger LLMs (e.g., OpenAI GPT 3.5, GPT 4).
 
 Naturally, some of these limitations could a much welcomed PR.
 
