@@ -2,7 +2,7 @@ from dataclasses import asdict
 from typing import Dict
 from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
 
-from lida.modules.scaffold import ChartScaffold
+from ..scaffold import ChartScaffold
 
 
 system_prompt = """

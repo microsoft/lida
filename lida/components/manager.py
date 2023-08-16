@@ -11,10 +11,12 @@ import logging
 
 import pandas as pd
 from llmx import llm, TextGenerator
-from lida.modules import VizEditor, VizExplainer, VizRepairer
 from lida.datamodel import Goal, Summary, TextGenerationConfig
 from lida.utils import read_dataframe
-from lida.modules import Summarizer, GoalExplorer, VizGenerator, ChartExecutor, VizEvaluator, VizRecommender
+from ..components.summarizer import Summarizer
+from ..components.goal import GoalExplorer
+from ..components.executor import ChartExecutor
+from ..components.viz import VizGenerator, VizEditor, VizExplainer, VizEvaluator, VizRepairer, VizRecommender
 
 import lida.web as lida
 
@@ -35,6 +37,7 @@ class Manager(object):
         self.repairer = VizRepairer()
         self.recommender = VizRecommender()
         self.data = None
+        self.infographer = None
 
     def check_textgen(self, config: TextGenerationConfig):
         """Check if self.text_gen is the same as the config passed in. If not, update self.text_gen"""
@@ -243,3 +246,35 @@ class Manager(object):
             text_gen=self.text_gen,
             library=library,
         )
+
+    def infographics(self, visualization: str, n: int = 1,
+                     style_prompt: Union[str, List[str]] = "",
+                     return_pil: bool = False
+                     ):
+        """
+        Generate infographics using the peacasso package.
+
+        Args:
+            visualization (str): A visualization code
+            n (int, optional): The number of infographics to generate. Defaults to 1.
+            style_prompt (Union[str, List[str]], optional): A style prompt or list of style prompts. Defaults to "".
+
+        Raises:
+            ImportError: If the peacasso package is not installed.
+        """
+
+        try:
+            import peacasso
+
+        except ImportError as exc:
+            raise ImportError(
+                'Please install the `peacasso` package to use the Infographics generation capabilities of LIDA. pip install lida[infographics]'
+            ) from exc
+
+        from ..components.infographer import Infographer
+
+        if self.infographer is None:
+            logger.info("Initializing Infographer")
+            self.infographer = Infographer()
+        return self.infographer.generate(
+            visualization=visualization, n=n, style_prompt=style_prompt, return_pil=return_pil)

@@ -2,7 +2,7 @@
 import json
 from lida.utils import clean_code_snippet
 from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
-from lida.modules.scaffold import ChartScaffold
+from ..scaffold import ChartScaffold
 
 
 system_prompt = """

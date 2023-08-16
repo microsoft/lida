@@ -1,7 +1,7 @@
 import logging
 import json
 from lida.utils import clean_code_snippet
-from lida.modules.scaffold import ChartScaffold
+from ..scaffold import ChartScaffold
 from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
 # from lida.modules.scaffold import ChartScaffold
 from lida.datamodel import Goal, Summary

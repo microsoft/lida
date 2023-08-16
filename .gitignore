@@ -1,12 +1,14 @@
 output/
 .vscode
 frontend
+notebooks/test.ipynb
 notebooks/experimental/*
 notebooks/experimental/samples
 notebooks/experimental/gallery
 notebooks/experimental/vega-datasets
 .azure
 .release.sh
+.pylintrc
 lida/generators/cache/cache.*
 lida/generators/cache/* 
 lib/samples/
