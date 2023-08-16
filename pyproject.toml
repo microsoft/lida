@@ -40,7 +40,7 @@ dependencies = [
     "basemap",
     "basemap-data-hires"
 ]
-optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]>=4.26"], tools=["geopy"], infographics=["peacasso"]}
+optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]"], tools=["geopy"], infographics=["peacasso"]}
 
 dynamic = ["version"]
 
