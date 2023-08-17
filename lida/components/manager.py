@@ -311,7 +311,7 @@ class Manager(object):
 
         except ImportError as exc:
             raise ImportError(
-                'Please install the `peacasso` package to use the Infographics generation capabilities of LIDA. pip install lida[infographics]'
+                'Please install lida with infographics support. pip install lida[infographics]. You will also need a GPU runtime.'
             ) from exc
 
         from ..components.infographer import Infographer

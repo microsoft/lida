@@ -16,7 +16,7 @@ class Infographer():
     def __init__(self, model_config: ModelConfig = None) -> None:
         self.model = None
         self.model_config = model_config or ModelConfig(
-            device="cuda:2",
+            device="cuda",
             model="runwayml/stable-diffusion-v1-5",
             revision="main"
         )
