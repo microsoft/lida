@@ -8,7 +8,7 @@
 
 <!-- <img src="docs/images/lidascreen.png" width="100%" /> -->
 
-LIDA is a library for generating data visualizations and data-faithful infographics. LIDA is grammar agnostic (will work with any programming language and visualization libraries e.g. matplotlib, seaborn, altair, d3 etc) and works with multiple large language model providers (OpenAI, PaLM, Cohere, Huggingface). Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb).
+LIDA is a library for generating data visualizations and data-faithful infographics. LIDA is grammar agnostic (will work with any programming language and visualization libraries e.g. matplotlib, seaborn, altair, d3 etc) and works with multiple large language model providers (OpenAI, PaLM, Cohere, Huggingface). Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb). See the project page [here](https://microsoft.github.io/lida/) for updates!.
 
 > **Note on Code Execution:**
 > To create visualizations, LIDA _generates_ and _executes_ code.
@@ -27,7 +27,7 @@ LIDA treats _**visualizations as code**_ and provides utilities for generating, 
 - [x] Visualization Explanation
 - [x] Visualization Evaluation and Repair
 - [x] Visualization Recommendation
-- [x] Infographic Generation (beta)
+- [x] Infographic Generation (beta) # pip install lida[infographics]
 
 ## Getting Started
 
