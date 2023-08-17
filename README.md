@@ -18,7 +18,7 @@ LIDA is a library for generating data visualizations and data-faithful infograph
 
 ![lida components](docs/images/lidamodules.jpg)
 
-LIDA treats _**visualizations as code**_ and provides utilities for generating, executing, editing, explaining, evaluating and repairing visualization code.
+LIDA treats _**visualizations as code**_ and provides a clean api for generating, executing, editing, explaining, evaluating and repairing visualization code.
 
 - [x] Data Summarization
 - [x] Goal Generation
@@ -28,6 +28,16 @@ LIDA treats _**visualizations as code**_ and provides utilities for generating, 
 - [x] Visualization Evaluation and Repair
 - [x] Visualization Recommendation
 - [x] Infographic Generation (beta) # pip install lida[infographics]
+
+```python
+
+from lida.components import Manager
+
+lida = Manager(text_gen = llm("openai")) # palm, cohere ..
+summary = lida.summarize("data/cars.csv", enrich=False)
+goals = lida.goals(summary, n=2) # exploratory data analysis
+charts = lida.visualize(summary=summary, n=2) # exploratory data analys
+```
 
 ## Getting Started
 
@@ -144,13 +154,17 @@ Naturally, some of these limitations could a much welcomed PR.
 A short paper describing LIDA (Accepted at ACL 2023 Conference) is available [here](https://arxiv.org/abs/2303.02927).
 
 ```bibtex
-@article{dibia2023lida,
-      title={LIDA: A Tool for Automatic Generation of Grammar-Agnostic Visualizations and Infographics using Large Language Models},
-      author={Victor Dibia},
-      year={2023},
-      eprint={2303.02927},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI}
+@inproceedings{dibia2023lida,
+    title = "{LIDA}: A Tool for Automatic Generation of Grammar-Agnostic Visualizations and Infographics using Large Language Models",
+    author = "Dibia, Victor",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-demo.11",
+    doi = "10.18653/v1/2023.acl-demo.11",
+    pages = "113--126",
 }
 ```
 
