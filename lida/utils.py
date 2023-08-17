@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 import tiktoken
 from diskcache import Cache
 import hashlib
+from PIL import Image
+
 
 logger = logging.getLogger(__name__)
 
@@ -39,12 +41,10 @@ def clean_column_names(df):
 def read_dataframe(file_location):
     file_extension = file_location.split('.')[-1]
     if file_extension == 'json':
-        with open(file_location, 'r') as f:
-            json_data = f.read()
         try:
-            df = pd.read_json(json_data, orient='records')
+            df = pd.read_json(file_location, orient='records')
         except ValueError:
-            df = pd.read_json(json_data, orient='table')
+            df = pd.read_json(file_location, orient='table')
     elif file_extension == 'csv':
         df = pd.read_csv(file_location)
     elif file_extension in ['xls', 'xlsx']:
@@ -100,47 +100,57 @@ def file_to_df(file_location: str):
     return df
 
 
-def plot_raster(rasters: Union[str, List[str]], figsize=(10, 10)):
+def plot_raster(rasters: Union[str, List[str]], figsize: tuple = (10, 10)):
     plt.figure(figsize=figsize)
 
     if isinstance(rasters, str):
         rasters = [rasters]
 
     images = []
-    max_height = 0
 
-    # Load images, convert to RGB if needed, and find the maximum height
+    # Load images, convert to RGB if needed, and resize to the same height
+    max_height = 0
     for raster in rasters:
         decoded_image = base64.b64decode(raster)
         image_buffer = io.BytesIO(decoded_image)
-        image = plt.imread(image_buffer)
+        image = Image.open(image_buffer)
 
         # Convert RGBA images to RGB
-        if image.shape[2] == 4:
-            image = image[:, :, :3]
+        if image.mode == "RGBA":
+            image = image.convert("RGB")
+
+        max_height = max(max_height, image.height)
+
+    for raster in rasters:
+        decoded_image = base64.b64decode(raster)
+        image_buffer = io.BytesIO(decoded_image)
+        image = Image.open(image_buffer)
+
+        # Convert RGBA images to RGB
+        if image.mode == "RGBA":
+            image = image.convert("RGB")
+
+        # Resize the image to have the same height as max_height while preserving the aspect ratio
+        width = int(image.width * (max_height / image.height))
+        image = image.resize((width, max_height), Image.LANCZOS)
+
+        # Convert the image back to numpy array
+        image = np.array(image)
 
         images.append(image)
-        max_height = max(max_height, image.shape[0])
-
-    # Pad images with white color if needed
-    padded_images = []
-    for image in images:
-        if image.shape[0] < max_height:
-            padding = np.full((max_height - image.shape[0], image.shape[1], image.shape[2]), 255)
-            padded_image = np.vstack((image, padding))
-        else:
-            padded_image = image
-        padded_images.append(padded_image)
 
     # Concatenate images horizontally and normalize image data
-    concatenated_image = np.concatenate(padded_images, axis=1)
-    if concatenated_image.dtype == np.float32 or concatenated_image.dtype == np.float64:
+    concatenated_image = np.concatenate(images, axis=1)
+    if (
+        concatenated_image.dtype == np.float32
+        or concatenated_image.dtype == np.float64
+    ):
         concatenated_image = np.clip(concatenated_image, 0, 1)
     else:
         concatenated_image = np.clip(concatenated_image, 0, 255)
 
     plt.imshow(concatenated_image)
-    plt.axis('off')
+    plt.axis("off")
     plt.box(False)
     plt.show()
 

@@ -126,13 +126,14 @@ class Summarizer():
             data = read_dataframe(data)
         data_properties = self.get_column_properties(data, n_samples)
 
-        # first stage in summary construction
+        # default single stage summary construction
         base_summary = {
             "name": file_name,
             "file_name": file_name,
             "dataset_description": "",
             "fields": data_properties,
         }
+
         data_summary = base_summary
 
         if summary_method == "llm":
