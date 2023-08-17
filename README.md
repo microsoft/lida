@@ -129,12 +129,13 @@ Given a visualization, generate a data-faithful infographic. This methods should
 infographics = lida.infographics(visualization = charts[0].raster, n=3, style_prompt="line art")
 ```
 
-## Important Notes / Caveats
+## Important Notes / Caveats / FAQs
 
 - LIDA generates and executes code based on provided input. Ensure that you run LIDA in a secure environment with appropriate permissions.
 - LIDA currently works best with datasets that have a small number of columns (<= 10). This is mainly due to the limited context size for most models. For larger datasets, consider preprocessing your dataset to use a subset of the columns.
 - LIDA assumes the dataset exists and is in a format that can be loaded into a pandas dataframe. For example, a csv file, or a json file with a list of objects. In practices the right dataset may need to be curated and preprocessed to ensure that it is suitable for the task at hand.
 - Smaller LLMs (e.g., OSS LLMs on Huggingface) have limited instruction following capabilities and may not work well with LIDA. LIDA works best with larger LLMs (e.g., OpenAI GPT 3.5, GPT 4).
+- How reliable is the LIDA approach? The LIDA [paper](https://aclanthology.org/2023.acl-demo.11/) describes experiments that evaluate the reliability of LIDA using a visualization error rate metric. With the current version of prompts, data summarization techniques, preprocessing/postprocessing logic and LLMs, LIDA has an error rate of < 3.5% on over 2200 visualizations generated (compared to a baseline of over 10% error rate). This area is work in progress.
 
 Naturally, some of these limitations could a much welcomed PR.
 

@@ -28,7 +28,7 @@ Your output MUST be a n code snippets separated by ******* (5 asterisks). For ex
 ....
 ```
 
-Do not include any text or explanation or prose.
+Do not include any text or explanation or prose. EACH CODE SNIPPET MUST BE A FULL PROGRAM (COMPLETE WITH IMPORT STATEMENT AND plot(data) method) THAT FOLLOWS THE STRUCTURE OF THE EXAMPLE VISUALIZATION CODE.
 """
 
 # refactor this to return n predictions ...
