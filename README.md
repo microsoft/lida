@@ -147,7 +147,7 @@ infographics = lida.infographics(visualization = charts[0].raster, n=3, style_pr
 - Smaller LLMs (e.g., OSS LLMs on Huggingface) have limited instruction following capabilities and may not work well with LIDA. LIDA works best with larger LLMs (e.g., OpenAI GPT 3.5, GPT 4).
 - How reliable is the LIDA approach? The LIDA [paper](https://aclanthology.org/2023.acl-demo.11/) describes experiments that evaluate the reliability of LIDA using a visualization error rate metric. With the current version of prompts, data summarization techniques, preprocessing/postprocessing logic and LLMs, LIDA has an error rate of < 3.5% on over 2200 visualizations generated (compared to a baseline of over 10% error rate). This area is work in progress.
 
-Naturally, some of these limitations could a much welcomed PR.
+Naturally, some of these limitations could be addressed by a much welcomed PR.
 
 ## Documentation and Citation
 
