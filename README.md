@@ -72,7 +72,7 @@ The fastest and recommended way to get started after installation will be to try
 Given a dataset, generate a compact summary of the data.
 
 ```python
-from lida.modules import Manager
+from lida.components import Manager
 
 lida = Manager()
 summary = lida.summarize("data/cars.json") # generate data summary
