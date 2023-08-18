@@ -31,7 +31,7 @@ LIDA treats _**visualizations as code**_ and provides a clean api for generating
 
 ```python
 
-from lida.components import Manager
+from lida import Manager
 
 lida = Manager(text_gen = llm("openai")) # palm, cohere ..
 summary = lida.summarize("data/cars.csv", enrich=False)
@@ -72,7 +72,7 @@ The fastest and recommended way to get started after installation will be to try
 Given a dataset, generate a compact summary of the data.
 
 ```python
-from lida.modules import Manager
+from lida import Manager
 
 lida = Manager()
 summary = lida.summarize("data/cars.json") # generate data summary
