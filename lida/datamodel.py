@@ -119,3 +119,11 @@ class ChartExecutorResponse:
     code: str           # code used to generate the visualization
     library: str     # library used to generate the visualization
     error: Optional[Dict] = None       # error message if status is False
+
+@dataclass
+class InfographicsRequest:
+    """A request for infographics generation"""
+    visualization: str
+    n: int = 1
+    style_prompt: Union[str, List[str]] = ""
+    # return_pil: bool = False

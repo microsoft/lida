@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import traceback
 
 from llmx import llm, providers
-from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRecommendRequest, VisualizeRepairWebRequest, VisualizeWebRequest
+from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRecommendRequest, VisualizeRepairWebRequest, VisualizeWebRequest, InfographicsRequest
 from ..components import Manager
 
 
@@ -269,6 +269,22 @@ def upload_file_via_url(payload: UploadUrl) -> dict:
         # traceback.print_exc()
         logger.error(f"Error processing file: {str(exception_error)}")
         return {"status": False, "message": f"Error processing file."}
+    
+# convert image to infographics
+@api.post("/infographer")
+async def generate_infographics(req: InfographicsRequest) -> dict:
+    """Generate infographics using the peacasso package"""
+    try:
+        result = lida.infographics(
+            visualization=req.visualization,
+            n=req.n,
+            style_prompt=req.style_prompt
+            # return_pil=req.return_pil
+        )
+        return {"status": True, "result": result, "message": "Successfully generated infographics"}
+    except Exception as exception_error:
+        logger.error(f"Error generating infographics: {str(exception_error)}")
+        return {"status": False, "message": f"Error generating infographics. {str(exception_error)}"}
 
 # list supported models
 
