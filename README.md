@@ -31,12 +31,12 @@ LIDA treats _**visualizations as code**_ and provides a clean api for generating
 
 ```python
 
-from lida import Manager
+from lida import Manager, llm
 
 lida = Manager(text_gen = llm("openai")) # palm, cohere ..
 summary = lida.summarize("data/cars.csv", enrich=False)
 goals = lida.goals(summary, n=2) # exploratory data analysis
-charts = lida.visualize(summary=summary, n=2) # exploratory data analys
+charts = lida.visualize(summary=summary, n=2) # exploratory data analysis
 ```
 
 ## Getting Started
