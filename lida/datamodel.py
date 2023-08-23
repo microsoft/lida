@@ -35,6 +35,17 @@ class Goal:
     visualization: str
     rationale: str
 
+    def _repr_markdown_(self):
+        return f"""
+### Goal {self.index}
+
+**Question:** {self.question}
+
+**Visualization:** `{self.visualization}`
+
+**Rationale:** {self.rationale}
+"""
+
 
 @dataclass
 class Summary:
