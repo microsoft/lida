@@ -1,12 +1,13 @@
+import ast
 import base64
-import re
+import importlib
+import io
 import os
+import re
 import traceback
 from typing import Any, List
+
 import matplotlib.pyplot as plt
-import io
-import ast
-import importlib
 import pandas as pd
 
 from lida.datamodel import ChartExecutorResponse, Summary
@@ -60,7 +61,9 @@ def get_globals_dict(code_string, data):
             module = importlib.import_module(node.module)
             for alias in node.names:
                 obj = getattr(module, alias.name)
-                imported_modules.append((f"{node.module}.{alias.name}", alias.asname, obj))
+                imported_modules.append(
+                    (f"{node.module}.{alias.name}", alias.asname, obj)
+                )
 
     # Import the required modules into a dictionary
     globals_dict = {}
@@ -68,13 +71,9 @@ def get_globals_dict(code_string, data):
         if alias:
             globals_dict[alias] = obj
         else:
-            globals_dict[module_name.split('.')[-1]] = obj
+            globals_dict[module_name.split(".")[-1]] = obj
 
-    ex_dicts = {
-        "pd": pd,
-        "data": data,
-        "plt": plt
-    }
+    ex_dicts = {"pd": pd, "data": data, "plt": plt}
     globals_dict.update(ex_dicts)
     return globals_dict
 
@@ -101,12 +100,14 @@ class ChartExecutor:
         #     raise Exception(
         #         "Permission to execute code not granted. Please set the environment variable LIDA_ALLOW_CODE_EVAL to '1' to allow code execution.")
 
+        if isinstance(summary, dict):
+            summary = Summary(**summary)
+
         charts = []
         code_spec_copy = code_specs.copy()
         code_specs = [preprocess_code(code) for code in code_specs]
         if library == "altair":
             for code in code_specs:
-
                 try:
                     ex_locals = get_globals_dict(code, data)
                     exec(code, ex_locals)
@@ -115,6 +116,7 @@ class ChartExecutor:
                     del vega_spec["data"]
                     if "datasets" in vega_spec:
                         del vega_spec["datasets"]
+
                     vega_spec["data"] = {"url": f"/files/data/{summary.file_name}"}
                     charts.append(
                         ChartExecutorResponse(
@@ -140,7 +142,7 @@ class ChartExecutor:
                                 error={
                                     "message": str(exception_error),
                                     "traceback": traceback.format_exc(),
-                                }
+                                },
                             )
                         )
             return charts
@@ -196,7 +198,6 @@ class ChartExecutor:
                         )
             return charts
         elif library == "ggplot":
-
             # print colum dtypes
             for code in code_specs:
                 try:
@@ -230,7 +231,7 @@ class ChartExecutor:
                                 error={
                                     "message": str(exception_error),
                                     "traceback": traceback.format_exc(),
-                                }
+                                },
                             )
                         )
             return charts
