@@ -210,8 +210,18 @@ async def generate_goal(req: GoalWebRequest) -> dict:
                 "message": f"Successfully generated {len(goals)} goals"}
     except Exception as exception_error:
         logger.error(f"Error generating goals: {str(exception_error)}")
-        return {"status": False,
-                "message": f"Error generating visualization goals. {exception_error}"}
+         # Check for a specific error message related to context length
+        if "context length" in str(exception_error).lower():
+            return {
+                "status": False,
+                "message": "The dataset you uploaded has too many columns. Please upload a dataset with fewer columns and try again."
+            }
+        
+        # For other exceptions
+        return {
+            "status": False,
+            "message": f"Error generating visualization goals. {exception_error}"
+        }
 
 
 @api.post("/summarize")
