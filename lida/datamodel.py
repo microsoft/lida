@@ -42,7 +42,7 @@ class Goal:
     def _repr_markdown_(self):
         return f"""
 ### Goal {self.index}
-
+---
 **Question:** {self.question}
 
 **Visualization:** `{self.visualization}`
@@ -61,12 +61,43 @@ class Summary:
     field_names: List[Any]
     fields: List[Any]
 
+    def _repr_markdown_(self):
+        field_lines = "\n".join([f"- **{name}:** {field}" for name,
+                                field in zip(self.field_names, self.fields)])
+        return f"""
+## Dataset Summary
+
+---
+
+**Name:** {self.name}
+
+**File Name:** {self.file_name}
+
+**Dataset Description:**
+
+{self.dataset_description}
+
+**Fields:**
+
+{field_lines}
+"""
+
 
 @dataclass
 class Persona:
     """A persona"""
     persona: str
     rationale: str
+
+    def _repr_markdown_(self):
+        return f"""
+### Persona
+---
+
+**Persona:** {self.persona}
+
+**Rationale:** {self.rationale}
+"""
 
 
 @dataclass
@@ -173,7 +204,6 @@ class ChartExecutorResponse:
             bundle["application/vnd.vegalite.v5+json"] = self.spec
 
         return bundle
-
 
 
 @dataclass
