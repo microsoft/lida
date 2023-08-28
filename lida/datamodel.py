@@ -63,6 +63,13 @@ class Summary:
 
 
 @dataclass
+class Persona:
+    """A persona"""
+    persona: str
+    rationale: str
+
+
+@dataclass
 class GoalWebRequest:
     """A Goal Web Request"""
 
@@ -166,6 +173,7 @@ class ChartExecutorResponse:
             bundle["application/vnd.vegalite.v5+json"] = self.spec
 
         return bundle
+
 
 
 @dataclass
