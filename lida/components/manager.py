@@ -11,7 +11,7 @@ import logging
 
 import pandas as pd
 from llmx import llm, TextGenerator
-from lida.datamodel import Goal, Summary, TextGenerationConfig
+from lida.datamodel import Goal, Summary, TextGenerationConfig, Persona
 from lida.utils import read_dataframe
 from ..components.summarizer import Summarizer
 from ..components.goal import GoalExplorer
@@ -78,11 +78,14 @@ class Manager(object):
 
     def goals(
             self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
-            n=5):
+            n=5, persona: Persona = None):
         self.check_textgen(config=textgen_config)
 
+        if isinstance(persona, dict):
+            persona = Persona(**persona)
+
         return self.goal.generate(summary=summary, text_gen=self.text_gen,
-                                  textgen_config=textgen_config, n=n)
+                                  textgen_config=textgen_config, n=n, persona=persona)
 
     def personas(
             self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),

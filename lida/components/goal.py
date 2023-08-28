@@ -2,7 +2,7 @@ import json
 import logging
 from lida.utils import clean_code_snippet
 from llmx import TextGenerator
-from lida.datamodel import Goal, TextGenerationConfig
+from lida.datamodel import Goal, TextGenerationConfig, Persona
 
 
 system_prompt = """You are a an experienced data analyst as well as visualization specialist who can generate a given number of insightful GOALS about data, when given a summary of the data. The VISUALIZATIONS YOU RECOMMEND MUST FOLLOW VISUALIZATION BEST PRACTICES (e.g., must use bar charts instead of pie charts for comparing quantities) AND BE MEANINGFUL (e.g., plot longitude and latitude on maps where appropriate).
@@ -22,14 +22,14 @@ class GoalExplorer():
         pass
 
     def generate(self, summary: dict, textgen_config: TextGenerationConfig,
-                 text_gen: TextGenerator, n=5) -> list[Goal]:
+                 text_gen: TextGenerator, n=5, persona: Persona = None) -> list[Goal]:
         """Generate goals given a summary of data"""
 
         user_prompt = f"""The number of GOALS to generate is {n}. Generate {n} GOALS in the right format given the data summary below,\n .
-        {summary} \n""" + """
+        {summary} \n"""
 
-        .
-        """
+        if persona:
+            user_prompt += f"""\n The generated goals should be focused on the interests of a  {persona.persona} persona. \n"""
 
         messages = [
             {"role": "system", "content": system_prompt},
