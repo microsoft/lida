@@ -15,6 +15,7 @@ from lida.datamodel import Goal, Summary, TextGenerationConfig
 from lida.utils import read_dataframe
 from ..components.summarizer import Summarizer
 from ..components.goal import GoalExplorer
+from ..components.persona import PersonaExplorer
 from ..components.executor import ChartExecutor
 from ..components.viz import VizGenerator, VizEditor, VizExplainer, VizEvaluator, VizRepairer, VizRecommender
 
@@ -38,6 +39,7 @@ class Manager(object):
         self.recommender = VizRecommender()
         self.data = None
         self.infographer = None
+        self.persona = PersonaExplorer()
 
     def check_textgen(self, config: TextGenerationConfig):
         """Check if self.text_gen is the same as the config passed in. If not, update self.text_gen"""
@@ -81,6 +83,14 @@ class Manager(object):
 
         return self.goal.generate(summary=summary, text_gen=self.text_gen,
                                   textgen_config=textgen_config, n=n)
+
+    def personas(
+            self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
+            n=5):
+        self.check_textgen(config=textgen_config)
+
+        return self.persona.generate(summary=summary, text_gen=self.text_gen,
+                                     textgen_config=textgen_config, n=n)
 
     def visualize(
         self,
