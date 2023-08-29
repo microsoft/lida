@@ -37,10 +37,8 @@ dependencies = [
     "geopandas",
     "matplotlib-venn",
     "wordcloud", 
-    "basemap",
-    "basemap-data-hires"
 ]
-optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]"], tools=["geopy"], infographics=["peacasso"]}
+optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]"], tools=["geopy", "basemap", "basemap-data-hires"], infographics=["peacasso"]}
 
 dynamic = ["version"]
 
