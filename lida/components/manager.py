@@ -83,6 +83,8 @@ class Manager(object):
 
         if isinstance(persona, dict):
             persona = Persona(**persona)
+        if isinstance(persona, str):
+            persona = Persona(persona=persona, rationale="")
 
         return self.goal.generate(summary=summary, text_gen=self.text_gen,
                                   textgen_config=textgen_config, n=n, persona=persona)
@@ -103,6 +105,10 @@ class Manager(object):
         library="seaborn",
         return_error: bool = False,
     ):
+        if isinstance(goal, dict):
+            goal = Goal(**goal)
+        if isinstance(goal, str):
+            goal = Goal(question=goal, visualization="", rationale="")
 
         self.check_textgen(config=textgen_config)
         code_specs = self.vizgen.generate(

@@ -3,6 +3,7 @@ from typing import Dict
 from llmx import TextGenerator, TextGenerationConfig, TextGenerationResponse
 
 from ..scaffold import ChartScaffold
+from lida.datamodel import Goal
 
 
 system_prompt = """
@@ -20,7 +21,7 @@ class VizGenerator(object):
 
         self.scaffold = ChartScaffold()
 
-    def generate(self, summary: Dict, goal: Dict,
+    def generate(self, summary: Dict, goal: Goal,
                  textgen_config: TextGenerationConfig, text_gen: TextGenerator, library='altair'):
         """Generate visualization code given a summary and a goal"""
 

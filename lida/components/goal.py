@@ -5,7 +5,7 @@ from llmx import TextGenerator
 from lida.datamodel import Goal, TextGenerationConfig, Persona
 
 
-system_prompt = """You are a an experienced data analyst as well as visualization specialist who can generate a given number of insightful GOALS about data, when given a summary of the data. The VISUALIZATIONS YOU RECOMMEND MUST FOLLOW VISUALIZATION BEST PRACTICES (e.g., must use bar charts instead of pie charts for comparing quantities) AND BE MEANINGFUL (e.g., plot longitude and latitude on maps where appropriate).
+system_prompt = """You are a an experienced data analyst who can generate a given number of insightful GOALS about data, when given a summary of the data, and a specified persona. The VISUALIZATIONS YOU RECOMMEND MUST FOLLOW VISUALIZATION BEST PRACTICES (e.g., must use bar charts instead of pie charts for comparing quantities) AND BE MEANINGFUL (e.g., plot longitude and latitude on maps where appropriate). They must also be relevant to the specified persona. The goal must include a question, a visualization, and a rationale (justification of what we will learn from the visualization).
 
 The GOALS that you recommend must mention the exact fields from the dataset summary above. Your OUTPUT MUST BE ONLY A CODE SNIPPET of a JSON LIST in the format:
 ```[{ "index": 0,  "question": "What is the distribution of X", "visualization": "histogram of X", "rationale": "This tells about "}, .. ]

@@ -33,11 +33,10 @@ class UploadUrl:
 @dataclass
 class Goal:
     """A visualization goal"""
-
-    index: int
     question: str
     visualization: str
     rationale: str
+    index: Optional[int] = 0
 
     def _repr_markdown_(self):
         return f"""
