@@ -8,7 +8,7 @@
 
 <!-- <img src="docs/images/lidascreen.png" width="100%" /> -->
 
-LIDA is a library for generating data visualizations and data-faithful infographics. LIDA is grammar agnostic (will work with any programming language and visualization libraries e.g. matplotlib, seaborn, altair, d3 etc) and works with multiple large language model providers (OpenAI, PaLM, Cohere, Huggingface). Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb). See the project page [here](https://microsoft.github.io/lida/) for updates!.
+LIDA is a library for generating data visualizations and data-faithful infographics. LIDA is grammar agnostic (will work with any programming language and visualization libraries e.g. matplotlib, seaborn, altair, d3 etc) and works with multiple large language model providers (OpenAI, Azure OpenAI, PaLM, Cohere, Huggingface). Details on the components of LIDA are described in the [paper here](https://arxiv.org/abs/2303.02927) and in this tutorial [notebook](notebooks/tutorial.ipynb). See the project page [here](https://microsoft.github.io/lida/) for updates!.
 
 > **Note on Code Execution:**
 > To create visualizations, LIDA _generates_ and _executes_ code.
@@ -83,8 +83,10 @@ summary = lida.summarize("data/cars.json") # generate data summary
 Generate a set of visualization goals given a data summary.
 
 ```python
-goals = lida.goals(summary, n=5) # generate goals
+goals = lida.goals(summary, n=5, persona="ceo with aerodynamics background") # generate goals
 ```
+
+Add a `persona` parameter to generate goals based on that persona.
 
 ### Visualization Generation
 

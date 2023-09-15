@@ -11,10 +11,11 @@ import logging
 
 import pandas as pd
 from llmx import llm, TextGenerator
-from lida.datamodel import Goal, Summary, TextGenerationConfig
+from lida.datamodel import Goal, Summary, TextGenerationConfig, Persona
 from lida.utils import read_dataframe
 from ..components.summarizer import Summarizer
 from ..components.goal import GoalExplorer
+from ..components.persona import PersonaExplorer
 from ..components.executor import ChartExecutor
 from ..components.viz import VizGenerator, VizEditor, VizExplainer, VizEvaluator, VizRepairer, VizRecommender
 
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class Manager(object):
     def __init__(self, text_gen: TextGenerator = None) -> None:
-        self.text_gen = text_gen or llm()
+        self.text_gen = text_gen or None
         self.summarizer = Summarizer()
         self.goal = GoalExplorer()
         self.vizgen = VizGenerator()
@@ -38,12 +39,15 @@ class Manager(object):
         self.recommender = VizRecommender()
         self.data = None
         self.infographer = None
+        self.persona = PersonaExplorer()
 
     def check_textgen(self, config: TextGenerationConfig):
         """Check if self.text_gen is the same as the config passed in. If not, update self.text_gen"""
 
         if config.provider is None:
-            config.provider = self.text_gen.provider
+            print(
+                f"Switchging Text Generator Provider from  {config.provider} to {self.text_gen.provider} ")
+            config.provider = self.text_gen.provider or "openai"
             return
 
         if self.text_gen.provider != config.provider:
@@ -76,11 +80,24 @@ class Manager(object):
 
     def goals(
             self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
+            n=5, persona: Persona = None):
+        self.check_textgen(config=textgen_config)
+
+        if isinstance(persona, dict):
+            persona = Persona(**persona)
+        if isinstance(persona, str):
+            persona = Persona(persona=persona, rationale="")
+
+        return self.goal.generate(summary=summary, text_gen=self.text_gen,
+                                  textgen_config=textgen_config, n=n, persona=persona)
+
+    def personas(
+            self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
             n=5):
         self.check_textgen(config=textgen_config)
 
-        return self.goal.generate(summary=summary, text_gen=self.text_gen,
-                                  textgen_config=textgen_config, n=n)
+        return self.persona.generate(summary=summary, text_gen=self.text_gen,
+                                     textgen_config=textgen_config, n=n)
 
     def visualize(
         self,
@@ -90,6 +107,10 @@ class Manager(object):
         library="seaborn",
         return_error: bool = False,
     ):
+        if isinstance(goal, dict):
+            goal = Goal(**goal)
+        if isinstance(goal, str):
+            goal = Goal(question=goal, visualization="", rationale="")
 
         self.check_textgen(config=textgen_config)
         code_specs = self.vizgen.generate(
