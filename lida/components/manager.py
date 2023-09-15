@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class Manager(object):
     def __init__(self, text_gen: TextGenerator = None) -> None:
-        self.text_gen = text_gen or llm()
+        self.text_gen = text_gen or None
         self.summarizer = Summarizer()
         self.goal = GoalExplorer()
         self.vizgen = VizGenerator()
@@ -45,7 +45,9 @@ class Manager(object):
         """Check if self.text_gen is the same as the config passed in. If not, update self.text_gen"""
 
         if config.provider is None:
-            config.provider = self.text_gen.provider
+            print(
+                f"Switchging Text Generator Provider from  {config.provider} to {self.text_gen.provider} ")
+            config.provider = self.text_gen.provider or "openai"
             return
 
         if self.text_gen.provider != config.provider:
