@@ -83,8 +83,10 @@ summary = lida.summarize("data/cars.json") # generate data summary
 Generate a set of visualization goals given a data summary.
 
 ```python
-goals = lida.goals(summary, n=5) # generate goals
+goals = lida.goals(summary, n=5, persona="ceo with aerodynamics background") # generate goals
 ```
+
+Add a `persona` parameter to generate goals based on that persona.
 
 ### Visualization Generation
 
