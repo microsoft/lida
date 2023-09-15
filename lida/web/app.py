@@ -210,13 +210,13 @@ async def generate_goal(req: GoalWebRequest) -> dict:
                 "message": f"Successfully generated {len(goals)} goals"}
     except Exception as exception_error:
         logger.error(f"Error generating goals: {str(exception_error)}")
-         # Check for a specific error message related to context length
+        # Check for a specific error message related to context length
         if "context length" in str(exception_error).lower():
             return {
                 "status": False,
                 "message": "The dataset you uploaded has too many columns. Please upload a dataset with fewer columns and try again."
             }
-        
+
         # For other exceptions
         return {
             "status": False,
@@ -279,8 +279,10 @@ def upload_file_via_url(payload: UploadUrl) -> dict:
         # traceback.print_exc()
         logger.error(f"Error processing file: {str(exception_error)}")
         return {"status": False, "message": f"Error processing file."}
-    
+
 # convert image to infographics
+
+
 @api.post("/infographer")
 async def generate_infographics(req: InfographicsRequest) -> dict:
     """Generate infographics using the peacasso package"""
@@ -294,7 +296,8 @@ async def generate_infographics(req: InfographicsRequest) -> dict:
         return {"status": True, "result": result, "message": "Successfully generated infographics"}
     except Exception as exception_error:
         logger.error(f"Error generating infographics: {str(exception_error)}")
-        return {"status": False, "message": f"Error generating infographics. {str(exception_error)}"}
+        return {"status": False,
+                "message": f"Error generating infographics. {str(exception_error)}"}
 
 # list supported models
 

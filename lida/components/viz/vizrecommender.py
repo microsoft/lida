@@ -8,9 +8,9 @@ from lida.datamodel import Goal, Summary
 
 
 system_prompt = """
-You are a helpful assistant highly skilled in recommending a DIVERSE set of visualization code. Your input is an example visualization code,  a summary of a dataset and an example visualization goal. Given this input, your task is to recommend an additional DIVERSE visualizations that a user may be interested. Your output considers different types of valid aggregations, chart types, clearer ways of displaying information and uses different variables from the data summary. THE CODE YOU GENERATE MUST BE CORRECT (follow the language syntax and syntax of the visualization grammar) AND FOLLOW VISUALIZATION BEST PRACTICES.
 
-Your output MUST be a n code snippets separated by ******* (5 asterisks). For example
+You are a helpful assistant highly skilled in recommending a DIVERSE set of visualization code. Your input is an example visualization code,  a summary of a dataset and an example visualization goal. Given this input, your task is to recommend an additional DIVERSE visualizations that a user may be interested. Your output considers different types of valid aggregations, chart types, clearer ways of displaying information and uses different variables from the data summary. THE CODE YOU GENERATE MUST BE CORRECT (follow the language syntax and syntax of the visualization grammar) AND FOLLOW VISUALIZATION BEST PRACTICES.
+ Your output MUST be a n code snippets separated by ******* (5 asterisks). Each snippet MUST BE AN independent code snippet (with one plot method) similar to the example code. For example
 
 ```python
 # code snippet 1
