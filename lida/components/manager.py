@@ -132,8 +132,40 @@ class Manager(object):
     
 
     def goals(
-            self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
-            n=5, persona: Persona = None):
+        self, 
+        summary: Summary,
+        textgen_config: TextGenerationConfig = TextGenerationConfig(),
+        n: int = 5,
+        persona: Persona = None
+    ) -> List[Goal]:
+        """
+        Generate goals based on a summary.
+
+        Args:
+            summary (Summary): Input summary.
+            textgen_config (TextGenerationConfig, optional): Text generation configuration. Defaults to TextGenerationConfig().
+            n (int, optional): Number of goals to generate. Defaults to 5.
+            persona (Persona, str, dict, optional): Persona information. Defaults to None.
+
+        Returns:
+            List[Goal]: List of generated goals.
+
+        Example of list of goals:
+
+            Goal 0
+            Question: What is the distribution of Retail_Price?
+
+            Visualization: histogram of Retail_Price
+
+            Rationale: This tells about the spread of prices of cars in the dataset.
+
+            Goal 1
+            Question: What is the distribution of Horsepower_HP_?
+
+            Visualization: box plot of Horsepower_HP_
+
+            Rationale: This tells about the distribution of horsepower of cars in the dataset.
+        """
         self.check_textgen(config=textgen_config)
 
         if isinstance(persona, dict):
