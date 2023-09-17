@@ -87,6 +87,37 @@ class Manager(object):
 
         Returns:
             Summary: Summary object containing the generated summary.
+
+        Example of Summary:
+
+            {'name': 'cars.csv',
+            'file_name': 'cars.csv',
+            'dataset_description': '',
+            'fields': [{'column': 'Name',
+            'properties': {'dtype': 'string',
+                'samples': ['Nissan Altima S 4dr',
+                'Mercury Marauder 4dr',
+                'Toyota Prius 4dr (gas/electric)'],
+                'num_unique_values': 385,
+                'semantic_type': '',
+                'description': ''}},
+            {'column': 'Type',
+            'properties': {'dtype': 'category',
+                'samples': ['SUV', 'Minivan', 'Sports Car'],
+                'num_unique_values': 5,
+                'semantic_type': '',
+                'description': ''}},
+            {'column': 'AWD',
+            'properties': {'dtype': 'number',
+                'std': 0,
+                'min': 0,
+                'max': 1,
+                'samples': [1, 0],
+                'num_unique_values': 2,
+                'semantic_type': '',
+                'description': ''}},
+            }
+
         """
         self.check_textgen(config=textgen_config)
 
