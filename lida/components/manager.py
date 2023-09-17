@@ -27,7 +27,13 @@ logger = logging.getLogger(__name__)
 
 class Manager(object):
     def __init__(self, text_gen: TextGenerator = None) -> None:
-        self.text_gen = text_gen or None
+        """
+        Initialize the Manager object.
+
+        Args:
+            text_gen (TextGenerator, optional): Text generator object. Defaults to None.
+        """
+        self.text_gen = text_gen or None  # Default text generator is 'openai'
         self.summarizer = Summarizer()
         self.goal = GoalExplorer()
         self.vizgen = VizGenerator()
@@ -42,19 +48,23 @@ class Manager(object):
         self.persona = PersonaExplorer()
 
     def check_textgen(self, config: TextGenerationConfig):
-        """Check if self.text_gen is the same as the config passed in. If not, update self.text_gen"""
+        """
+        Check if self.text_gen is the same as the config passed in. If not, update self.text_gen.
 
+        Args:
+            config (TextGenerationConfig): Text generation configuration.
+        """
         if config.provider is None:
             print(
-                f"Switchging Text Generator Provider from  {config.provider} to {self.text_gen.provider} ")
+                f"Switching Text Generator Provider from  {config.provider} to {self.text_gen.provider} ")
             config.provider = self.text_gen.provider or "openai"
             return
 
         if self.text_gen.provider != config.provider:
             print(
-                f"Switchging Text Generator Provider from {self.text_gen.provider} to {config.provider}")
+                f"Switching Text Generator Provider from {self.text_gen.provider} to {config.provider}")
             logger.info(
-                f"Switchging Text Generator Provider from {self.text_gen.provider} to {config.provider}")
+                f"Switching Text Generator Provider from {self.text_gen.provider} to {config.provider}")
             self.text_gen = llm(provider=config.provider)
 
     def summarize(
@@ -64,8 +74,20 @@ class Manager(object):
         n_samples: int = 3,
         summary_method: str = "default",
         textgen_config: TextGenerationConfig = TextGenerationConfig(n=1, temperature=0),
-    ):
+    ) -> Summary:
+        """
+        Summarize data given a DataFrame or file path.
 
+        Args:
+            data (Union[pd.DataFrame, str]): Input data, either a DataFrame or file path.
+            file_name (str, optional): Name of the file if data is loaded from a file path. Defaults to "".
+            n_samples (int, optional): Number of summary samples to generate. Defaults to 3.
+            summary_method (str, optional): Summary method to use. Defaults to "default".
+            textgen_config (TextGenerationConfig, optional): Text generation configuration. Defaults to TextGenerationConfig(n=1, temperature=0).
+
+        Returns:
+            Summary: Summary object containing the generated summary.
+        """
         self.check_textgen(config=textgen_config)
 
         if isinstance(data, str):
@@ -73,10 +95,10 @@ class Manager(object):
             data = read_dataframe(data)
 
         self.data = data
-        # self.data = data
         return self.summarizer.summarize(
             data=self.data, text_gen=self.text_gen, file_name=file_name, n_samples=n_samples,
             summary_method=summary_method, textgen_config=textgen_config)
+    
 
     def goals(
             self, summary, textgen_config: TextGenerationConfig = TextGenerationConfig(),
