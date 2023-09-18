@@ -27,13 +27,16 @@ logger = logging.getLogger(__name__)
 
 class Manager(object):
     def __init__(self, text_gen: TextGenerator = None) -> None:
+
         """
         Initialize the Manager object.
 
         Args:
             text_gen (TextGenerator, optional): Text generator object. Defaults to None.
         """
-        self.text_gen = text_gen or None  # Default text generator is 'openai'
+
+        self.text_gen = text_gen or llm()
+
         self.summarizer = Summarizer()
         self.goal = GoalExplorer()
         self.vizgen = VizGenerator()
