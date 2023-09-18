@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 class Manager(object):
     def __init__(self, text_gen: TextGenerator = None) -> None:
-        self.text_gen = text_gen or None
+        self.text_gen = text_gen or llm()
         self.summarizer = Summarizer()
         self.goal = GoalExplorer()
         self.vizgen = VizGenerator()
