@@ -235,7 +235,46 @@ class ChartExecutor:
                             )
                         )
             return charts
+
+        elif library == "plotly":
+            for code in code_specs:
+                try:
+                    ex_locals = get_globals_dict(code, data)
+                    exec(code, ex_locals)
+                    chart = ex_locals["chart"]
+
+                    # Convert Plotly chart to JSON format
+                    chart_json = chart.to_json()
+
+                    charts.append(
+                        ChartExecutorResponse(
+                            spec=chart_json,
+                            status=True,
+                            raster=None,  # No raster image for Plotly
+                            code=code,
+                            library=library,
+                        )
+                    )
+                except Exception as exception_error:
+                    print(code)
+                    print(traceback.format_exc())
+                    if return_error:
+                        charts.append(
+                            ChartExecutorResponse(
+                                spec=None,
+                                status=False,
+                                raster=None,
+                                code=code,
+                                library=library,
+                                error={
+                                    "message": str(exception_error),
+                                    "traceback": traceback.format_exc(),
+                                },
+                            )
+                        )
+            return charts
+
         else:
             raise Exception(
-                f"Unsupported library. Supported libraries are altair, matplotlib, seaborn, ggplot. You provided {library}"
+                f"Unsupported library. Supported libraries are altair, matplotlib, seaborn, ggplot, plotly. You provided {library}"
             )

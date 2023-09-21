@@ -83,6 +83,22 @@ def plot(data: pd.DataFrame):
     return chart
 chart = plot(data) # data already contains the data to be plotted.  Always include this line. No additional code beyond this line..
 """
+
+        elif library == "plotly":
+            instructions = {
+                "role": "system",
+                "content": f"If calculating metrics such as mean, median, mode, etc. ALWAYS use the option 'numeric_only=True' when applicable and available, {mpl_pre}",
+            }
+            template = \
+                """
+import plotly.express as px
+<imports>
+def plot(data: pd.DataFrame):
+    <stub> # only modify this section
+    return chart
+chart = plot(data) # data already contains the data to be plotted.  Always include this line. No additional code beyond this line..
+"""
+
         else:
             raise ValueError(
                 "Unsupported library. Choose from 'matplotlib', 'seaborn', 'plotly', 'bokeh', 'ggplot', 'altair'."
