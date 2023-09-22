@@ -9,6 +9,7 @@ from typing import Any, List
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.io as pio
 
 from lida.datamodel import ChartExecutorResponse, Summary
 
@@ -243,18 +244,19 @@ class ChartExecutor:
                     exec(code, ex_locals)
                     chart = ex_locals["chart"]
 
-                    # Convert Plotly chart to JSON format
-                    chart_json = chart.to_json()
+                    if pio:
+                        chart_bytes = pio.to_image(chart, 'png')
+                        plot_data = base64.b64encode(chart_bytes).decode('utf-8')
 
-                    charts.append(
-                        ChartExecutorResponse(
-                            spec=chart_json,
-                            status=True,
-                            raster=None,  # No raster image for Plotly
-                            code=code,
-                            library=library,
+                        charts.append(
+                            ChartExecutorResponse(
+                                spec=None,
+                                status=True,
+                                raster=plot_data,
+                                code=code,
+                                library=library,
+                            )
                         )
-                    )
                 except Exception as exception_error:
                     print(code)
                     print(traceback.format_exc())

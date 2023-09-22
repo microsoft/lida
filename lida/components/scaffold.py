@@ -87,7 +87,7 @@ chart = plot(data) # data already contains the data to be plotted.  Always inclu
         elif library == "plotly":
             instructions = {
                 "role": "system",
-                "content": f"If calculating metrics such as mean, median, mode, etc. ALWAYS use the option 'numeric_only=True' when applicable and available, {mpl_pre}",
+                "content": f"If calculating metrics such as mean, median, mode, etc. ALWAYS use the option 'numeric_only=True' when applicable and available, AVOID visualizations that require nbformat library, ALWAYS return the chart object {mpl_pre}",
             }
             template = \
                 """
