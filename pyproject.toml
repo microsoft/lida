@@ -36,7 +36,8 @@ dependencies = [
     "networkx",
     "geopandas",
     "matplotlib-venn",
-    "wordcloud", 
+    "wordcloud",
+    "kaleido"
 ]
 optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]"], tools=["geopy", "basemap", "basemap-data-hires"], infographics=["peacasso"]}
 
