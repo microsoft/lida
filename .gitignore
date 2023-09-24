@@ -22,6 +22,7 @@ test.py
 experiments/data
 test.py
 .azure
+.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

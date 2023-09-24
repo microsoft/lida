@@ -1,0 +1,64 @@
+ // -------- Adding Dev Container Support  --------
+// See the following links for documentation
+//  About: https://containers.dev/
+//  Format: https://aka.ms/devcontainer.json
+//  VSCode: https://code.visualstudio.com/docs/devcontainers/containers
+//  Codespaces: https://docs.github.com/en/codespaces/overview
+//  Image: https://github.com/devcontainers/templates/tree/main/src/universal
+//  Dockerfile: https://containers.dev/guide/dockerfile
+//  Features: https://containers.dev/features.
+// ----------------------------------------------
+
+
+// This devcontainer.json is inspired by the default codespaces-jupyter setup
+// See: https://github.com/github/codespaces-jupyter
+
+{
+	// Container Name Shown in VSCode
+	"name": "LIDA Visualization",
+
+	// Default Docker image for base container 
+	"image": "mcr.microsoft.com/devcontainers/universal:2",
+
+	// Features to add to the dev container. More info: 
+	"features": {},
+
+	// Specify explicit CPU, Storage requirements for container
+	"hostRequirements": {
+		//"cpus": 4,
+        // "memory": "8gb"
+	},
+
+	// Lifecycle based configuration 
+	"waitFor": "onCreateCommand",
+	"updateContentCommand": "python3 -m pip install -r requirements.txt",
+	"postCreateCommand": "bash ./.devcontainer/post-create.sh",
+
+	// Explicitly forwarded ports
+	"forwardPorts": [
+		8080
+	],
+
+    "portsAttributes": {
+        "8080": {
+            "label": "Lida Web UI"
+        }
+    },
+
+	// Configure tool-specific properties e.g., VS Code Extensions
+	"customizations": {
+		"codespaces": {
+			"openFiles": []
+		},
+		"vscode": {
+			"extensions": [
+				"ms-toolsai.jupyter",
+				"ms-python.python"
+			]
+		}
+	}
+
+	// Uncomment to connect as root instead. 
+	// More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
