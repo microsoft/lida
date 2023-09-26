@@ -6,6 +6,7 @@ notebooks/experimental/*
 notebooks/experimental/samples
 notebooks/experimental/gallery
 notebooks/experimental/vega-datasets
+notebooks/research/data/*
 .azure
 .release.sh
 .pylintrc
