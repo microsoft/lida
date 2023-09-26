@@ -2,10 +2,8 @@ output/
 .vscode
 frontend
 notebooks/test.ipynb
-notebooks/experimental/*
-notebooks/experimental/samples
-notebooks/experimental/gallery
-notebooks/experimental/vega-datasets
+notebooks/experimental/*  
+notebooks
 .azure
 .release.sh
 .pylintrc
