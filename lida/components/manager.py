@@ -22,12 +22,11 @@ from ..components.viz import VizGenerator, VizEditor, VizExplainer, VizEvaluator
 import lida.web as lida
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 
 
 class Manager(object):
     def __init__(self, text_gen: TextGenerator = None) -> None:
-
         """
         Initialize the Manager object.
 
@@ -58,16 +57,16 @@ class Manager(object):
             config (TextGenerationConfig): Text generation configuration.
         """
         if config.provider is None:
-            print(
-                f"Switching Text Generator Provider from  {config.provider} to {self.text_gen.provider} ")
             config.provider = self.text_gen.provider or "openai"
+            logger.info("Provider is not set, using default provider - %s", config.provider)
             return
 
         if self.text_gen.provider != config.provider:
-            print(
-                f"Switching Text Generator Provider from {self.text_gen.provider} to {config.provider}")
+
             logger.info(
-                f"Switching Text Generator Provider from {self.text_gen.provider} to {config.provider}")
+                "Switching Text Generator Provider from %s to %s",
+                self.text_gen.provider,
+                config.provider)
             self.text_gen = llm(provider=config.provider)
 
     def summarize(
@@ -132,10 +131,9 @@ class Manager(object):
         return self.summarizer.summarize(
             data=self.data, text_gen=self.text_gen, file_name=file_name, n_samples=n_samples,
             summary_method=summary_method, textgen_config=textgen_config)
-    
 
     def goals(
-        self, 
+        self,
         summary: Summary,
         textgen_config: TextGenerationConfig = TextGenerationConfig(),
         n: int = 5,

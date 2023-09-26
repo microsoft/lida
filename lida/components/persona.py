@@ -12,7 +12,7 @@ Your response should be perfect JSON in the following format:
 ```
 """
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 
 
 class PersonaExplorer():

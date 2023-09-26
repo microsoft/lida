@@ -7,7 +7,7 @@ from peacasso.datamodel import GeneratorConfig, ModelConfig
 from peacasso.utils import base64_to_pil, pil_to_base64
 import torch
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 
 
 class Infographer():

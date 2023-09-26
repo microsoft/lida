@@ -15,7 +15,7 @@ iii.) ALWAYS generate a semantic_type (a single word) for each field given its v
 You must return an updated JSON dictionary without any preamble or explanation.
 """
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 
 
 class Summarizer():

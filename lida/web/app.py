@@ -14,7 +14,7 @@ from ..components import Manager
 
 # instantiate model and generator
 textgen = llm()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 api_docs = os.environ.get("LIDA_API_DOCS", "False") == "True"
 
 
@@ -249,7 +249,7 @@ async def upload_file(file: UploadFile):
         summary = lida.summarize(
             data=file_location,
             file_name=file.filename,
-            summary_method="default",
+            summary_method="llm",
             textgen_config=textgen_config)
         return {"status": True, "summary": summary, "data_filename": file.filename}
     except Exception as exception_error:
@@ -273,6 +273,7 @@ def upload_file_via_url(payload: UploadUrl) -> dict:
         summary = lida.summarize(
             data=file_location,
             file_name=file_name,
+            summary_method="llm",
             textgen_config=textgen_config)
         return {"status": True, "summary": summary, "data_filename": file_name}
     except Exception as exception_error:

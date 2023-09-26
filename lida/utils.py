@@ -14,7 +14,7 @@ import hashlib
 from PIL import Image
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 
 
 def get_dirs(path: str) -> List[str]:

@@ -34,8 +34,7 @@ import ...
 Do not include any text or explanation or prose. EACH CODE SNIPPET MUST BE A FULL PROGRAM (IT MUST IMPORT ALL THE LIBRARIES THAT ARE USED AND MUST CONTAIN plot(data) method) THAT FOLLOWS THE STRUCTURE OF THE EXAMPLE VISUALIZATION CODE.
 """
 
-# refactor this to return n predictions ...
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 
 
 class VizRecommender(object):

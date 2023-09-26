@@ -12,7 +12,7 @@ The GOALS that you recommend must mention the exact fields from the dataset summ
 ```
 """
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("lida")
 
 
 class GoalExplorer():
