@@ -8,18 +8,21 @@ cars_data_url = "https://raw.githubusercontent.com/uwdata/draco/master/data/cars
 
 
 def test_summarizer():
-    textgen_config = TextGenerationConfig(n=1, temperature=0.5, use_cache=False, max_tokens=None)
-    summary_no_enrich = lida.summarize(cars_data_url, summary_method="default")
-    summary = lida.summarize(
-        "https://raw.githubusercontent.com/uwdata/draco/master/data/cars.csv",
-        textgen_config=textgen_config, summary_method="llm")
+    textgen_config = TextGenerationConfig(n=1, temperature=0, use_cache=False, max_tokens=None)
+    summary_no_enrich = lida.summarize(
+        cars_data_url,
+        textgen_config=textgen_config,
+        summary_method="default")
+    summary_enrich = lida.summarize(cars_data_url,
+                                    textgen_config=textgen_config, summary_method="llm")
 
-    assert summary_no_enrich != summary
-    assert "dataset_description" in summary and len(summary["dataset_description"]) > 0
+    assert summary_no_enrich != summary_enrich
+    assert "dataset_description" in summary_enrich and len(
+        summary_enrich["dataset_description"]) > 0
 
 
 def test_goals():
-    textgen_config = TextGenerationConfig(n=1, temperature=0.5, use_cache=False, max_tokens=None)
+    textgen_config = TextGenerationConfig(n=1, temperature=0.1, use_cache=False, max_tokens=None)
     summary = lida.summarize(
         cars_data_url,
         textgen_config=textgen_config, summary_method="default")
