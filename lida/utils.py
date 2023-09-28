@@ -192,11 +192,16 @@ def cache_request(cache: Cache, params: Any, values: Any = None) -> Any:
     return values
 
 
-def clean_code_snippet(markdown_string):
+def clean_code_snippet(code_string):
     # Extract code snippet using regex
-    code_snippet = re.search(r'```(?:\w+)?\s*([\s\S]*?)\s*```', markdown_string)
+    cleaned_snippet = re.search(r'```(?:\w+)?\s*([\s\S]*?)\s*```', code_string)
 
-    if code_snippet:
-        return code_snippet.group(1)
+    if cleaned_snippet:
+        cleaned_snippet = cleaned_snippet.group(1)
     else:
-        return markdown_string
+        cleaned_snippet = code_string
+
+    # remove non-printable characters
+    # cleaned_snippet = re.sub(r'[\x00-\x1F]+', ' ', cleaned_snippet)
+
+    return cleaned_snippet
