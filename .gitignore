@@ -2,8 +2,7 @@ output/
 .vscode
 frontend
 notebooks/test.ipynb
-notebooks/experimental/*  
-notebooks
+notebooks/experimental/*   
 .azure
 .release.sh
 .pylintrc
