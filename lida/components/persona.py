@@ -8,8 +8,7 @@ from lida.datamodel import Persona, TextGenerationConfig
 system_prompt = """You are an experienced data analyst  who can take a dataset summary and generate a list of n personas (e.g., ceo or accountant for finance related data, economist for population or gdp related data, doctors for health data, or just users) that might be critical stakeholders in exploring some data and describe rationale for why they are critical. The personas should be prioritized based on their relevance to the data. Think step by step.
 
 Your response should be perfect JSON in the following format:
-[{"persona": "persona1", "rationale": "..."},{"persona": "persona1", "rationale": "..."}]
-```
+```[{"persona": "persona1", "rationale": "..."},{"persona": "persona1", "rationale": "..."}]```
 """
 
 logger = logging.getLogger("lida")

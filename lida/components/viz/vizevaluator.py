@@ -16,9 +16,11 @@ You are a helpful assistant highly skilled in evaluating the quality of a given 
 
 You must provide a score for each of the above dimensions.  Assume that data in chart = plot(data) contains a valid dataframe for the dataset. The `plot` function returns a chart (e.g., matplotlib, seaborn etc object).
 
-Your OUTPUT MUST BE ONLY A CODE SNIPPET of a JSON LIST in the format:
-```
-[{ "dimension":  "bugs",  "score": 1, "rationale": " .."}, { "dimension":  "type",  "score": 1, "rationale": " .."},  ..]
+Your OUTPUT MUST BE A VALID JSON LIST OF OBJECTS in the format:
+
+```[
+{ "dimension":  "bugs",  "score": x , "rationale": " .."}, { "dimension":  "transformation",  "score": x, "rationale": " .."}, { "dimension":  "compliance",  "score": x, "rationale": " .."},{ "dimension":  "type",  "score": x, "rationale": " .."}, { "dimension":  "encoding",  "score": x, "rationale": " .."}, { "dimension":  "aesthetics",  "score": x, "rationale": " .."}
+]
 ```
 """
 
@@ -38,7 +40,7 @@ class VizEvaluator(object):
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "assistant",
-             "content": f"Generate an evaluation given the goal and code below in {library}. The goal is {goal.question} and the code is {code}.\n=======\n. Think step by step and provide an evaluation."},
+             "content": f"Generate an evaluation given the goal and code below in {library}. The specified goal is \n\n {goal.question} \n\n and the visualization code is \n\n {code} \n\n. Now, evaluate the code based on the 6 dimensions above. \n. THE SCORE YOU ASSIGN MUST BE MEANINGFUL AND BACKED BY CLEAR RATIONALE. A SCORE OF 1 IS POOR AND A SCORE OF 10 IS VERY GOOD. The structured evaluation is below ."},
         ]
 
         # print(messages)

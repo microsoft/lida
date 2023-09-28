@@ -259,7 +259,7 @@ async def upload_file(file: UploadFile):
 
 # upload via url
 @api.post("/summarize/url")
-def upload_file_via_url(payload: UploadUrl) -> dict:
+async def upload_file_via_url(payload: UploadUrl) -> dict:
     """ Upload a file from a url and return a summary of the data """
     url = payload.url
     file_name = url.split("/")[-1]

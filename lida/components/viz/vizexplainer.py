@@ -12,10 +12,16 @@ You can explain code across the following 3 dimensions:
 2. transformation: This should describe the section of the code that applies any kind of data transformation (filtering, aggregation, grouping, null value handling etc)
 3. visualization: step by step description of the code that creates or modifies the presented visualization.
 
-Your output MUST be perfect JSON in THE FORM OF A VALID JSON LIST  e.g.,
-[{"section": "accessibility", "code": "None", "explanation": ".."},  { "section":  "transformation",  "code": "..", "explanation": ".."}, { "section":  "visualization",  "code": "..", "explanation": ".."}].
+"""
 
-The code part of the dictionary must come from the supplied code and should cover the explanation. The explanation part of the dictionary must be a string. The section part of the dictionary must be one of "accessibility", "transformation", "visualization" with no repetition. The list must have exactly 3 dictionaries.
+format_instructions = """
+Your output MUST be perfect JSON in THE FORM OF A VALID LIST of JSON OBJECTS WITH PROPERLY ESCAPED SPECIAL CHARACTERS e.g.,
+
+```[
+    {"section": "accessibility", "code": "None", "explanation": ".."}  , {"section": "transformation", "code": "..", "explanation": ".."}  ,  {"section": "visualization", "code": "..", "explanation": ".."}
+    ] ```
+
+The code part of the dictionary must come from the supplied code and should cover the explanation. The explanation part of the dictionary must be a string. The section part of the dictionary must be one of "accessibility", "transformation", "visualization" with no repetition. THE LIST MUST HAVE EXACTLY 3 JSON OBJECTS [{}, {}, {}].  THE GENERATED JSON  MUST BE A LIST IE START AND END WITH A SQUARE BRACKET.
 """
 
 
@@ -34,9 +40,9 @@ class VizExplainer(object):
 
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"The code to be explained is {code}.\n=======\n"},
-            {"role": "assistant",
-             "content": f"Generate a structured explanation of the code explanation for the code above."}
+            {"role": "assistant", "content": f"The code to be explained is {code}.\n=======\n"},
+            {"role": "user",
+             "content": f"{format_instructions}. \n\n. The structured explanation for the code above is \n\n"}
         ]
 
         completions: TextGenerationResponse = text_gen.generate(
@@ -44,6 +50,7 @@ class VizExplainer(object):
 
         completions = [clean_code_snippet(x['content']) for x in completions.text]
         explanations = []
+
         for completion in completions:
             try:
                 exp = json.loads(completion)
