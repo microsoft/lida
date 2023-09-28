@@ -9,6 +9,7 @@ from typing import Any, List
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import plotly.io as pio
 
 from lida.datamodel import ChartExecutorResponse, Summary
 
@@ -235,7 +236,47 @@ class ChartExecutor:
                             )
                         )
             return charts
+
+        elif library == "plotly":
+            for code in code_specs:
+                try:
+                    ex_locals = get_globals_dict(code, data)
+                    exec(code, ex_locals)
+                    chart = ex_locals["chart"]
+
+                    if pio:
+                        chart_bytes = pio.to_image(chart, 'png')
+                        plot_data = base64.b64encode(chart_bytes).decode('utf-8')
+
+                        charts.append(
+                            ChartExecutorResponse(
+                                spec=None,
+                                status=True,
+                                raster=plot_data,
+                                code=code,
+                                library=library,
+                            )
+                        )
+                except Exception as exception_error:
+                    print(code)
+                    print(traceback.format_exc())
+                    if return_error:
+                        charts.append(
+                            ChartExecutorResponse(
+                                spec=None,
+                                status=False,
+                                raster=None,
+                                code=code,
+                                library=library,
+                                error={
+                                    "message": str(exception_error),
+                                    "traceback": traceback.format_exc(),
+                                },
+                            )
+                        )
+            return charts
+
         else:
             raise Exception(
-                f"Unsupported library. Supported libraries are altair, matplotlib, seaborn, ggplot. You provided {library}"
+                f"Unsupported library. Supported libraries are altair, matplotlib, seaborn, ggplot, plotly. You provided {library}"
             )
