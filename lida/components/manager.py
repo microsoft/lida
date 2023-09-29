@@ -196,7 +196,7 @@ class Manager(object):
         if isinstance(goal, dict):
             goal = Goal(**goal)
         if isinstance(goal, str):
-            goal = Goal(question=goal, visualization="", rationale="")
+            goal = Goal(question=goal, visualization=goal, rationale="")
 
         self.check_textgen(config=textgen_config)
         code_specs = self.vizgen.generate(

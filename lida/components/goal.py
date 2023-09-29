@@ -62,5 +62,5 @@ class GoalExplorer():
             logger.info(f"Error decoding JSON: {result.text[0]['content']}")
             print(f"Error decoding JSON: {result.text[0]['content']}")
             raise ValueError(
-                "The model did not return a valid JSON object while attempting generate goals. Please try again.")
+                "The model did not return a valid JSON object while attempting generate goals. Consider using a larger model or a model with higher max token length.")
         return result

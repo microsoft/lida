@@ -107,7 +107,7 @@ class Summarizer():
             json_string = clean_code_snippet(response.text[0]["content"])
             enriched_summary = json.loads(json_string)
         except json.decoder.JSONDecodeError:
-            error_msg = f"The model did not return a valid JSON object while attempting to generate an enriched data summary. Consider using a base summary. {response.text[0]['content']}"
+            error_msg = f"The model did not return a valid JSON object while attempting to generate an enriched data summary. Consider using a default summary or  a larger model with higher max token length. | {response.text[0]['content']}"
             logger.info(error_msg)
             print(response.text[0]["content"])
             raise ValueError(error_msg + "" + response.usage)
