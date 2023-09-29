@@ -36,8 +36,8 @@ class VizEditor(object):
             {
                 "role": "system", "content": system_prompt}, {
                 "role": "system", "content": f"The dataset summary is : \n\n {summary} \n\n"}, {
-                "role": "system", "content": f"The code to be modified is: \n\n{code} \n\n. THE CODE YOU GENERATE MUST BE CORRECT FOLLLOW  and based on the '{library}' library and also follow these instructions instructions \n\n{library_instructions} \n\n. The resulting code MUST use the following template {library_template}"}, {
-                    "role": "user", "content": f"ALL ADDITIONAL LIBRARIES USED MUST BE IMPORTED.\n YOU MUST THINK STEP BY STEP, AND CAREFULLY MODIFY THE CODE above TO MEET THE EACH OF the FOLLOWING INSTRUCTIONS: \n\n {instruction_string} \n\n. The completed modified code is below. \n"}]
+                "role": "system", "content": f"The code to be modified is: \n\n{code} \n\n. THE CODE YOU GENERATE MUST BE CORRECT (e.g. ensure the right methods for fig and axes are used.)  based on the '{library}' library and also follow these instructions instructions \n\n{library_instructions} \n\n. The resulting code MUST use the following template {library_template}"}, {
+                    "role": "user", "content": f"ALL ADDITIONAL LIBRARIES USED MUST BE IMPORTED.\n YOU MUST THINK STEP BY STEP, AND CAREFULLY MODIFY THE CODE above TO MEET EACH OF THE FOLLOWING INSTRUCTIONS: \n\n {instruction_string} \n\n. The completed modified code THAT FOLLOWS THE TEMPLATE is below. \n"}]
 
         completions: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)

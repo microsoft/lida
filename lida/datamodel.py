@@ -58,7 +58,7 @@ class Summary:
     file_name: str
     dataset_description: str
     field_names: List[Any]
-    fields: List[Any]
+    fields: Optional[List[Any]] = None
 
     def _repr_markdown_(self):
         field_lines = "\n".join([f"- **{name}:** {field}" for name,

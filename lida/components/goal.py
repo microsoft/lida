@@ -47,7 +47,7 @@ class GoalExplorer():
             {"role": "system", "content": system_prompt},
             {"role": "assistant",
              "content":
-             f"{user_prompt}\n\n {format_instructions} \n\n. The generated goals are \n\n "}]
+             f"{user_prompt}\n\n {format_instructions} \n\n. The generated {n} goals are \n\n "}]
 
         result: list[Goal] = text_gen.generate(messages=messages, config=textgen_config)
 
