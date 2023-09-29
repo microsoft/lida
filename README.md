@@ -141,6 +141,33 @@ Given a visualization, generate a data-faithful infographic. This methods should
 infographics = lida.infographics(visualization = charts[0].raster, n=3, style_prompt="line art")
 ```
 
+## Using LIDA with Locally Hosted LLMs (HuggingFace)
+
+LIDA uses the [llmx](https://github.com/victordibia/llmx) library as its interface for text generation. llmx supports multiple local models including HuggingFace models. You can use the huggingface models directly (assuming you have a gpu) or connect to an openai compatible local model endpoint e.g. using the excellent [vllm](https://vllm.readthedocs.io/en/latest/) library.
+
+### Using HuggingFace Models Directly
+
+```python
+from lida import llm
+text_gen = llm(provider="hf", model="uukuguy/speechless-llama2-hermes-orca-platypus-13b", device_map="auto")
+lida = Manager(llm=text_gen)
+# now you can call lida methods as above e.g.
+sumamry = lida.summarize("data/cars.csv") # ....
+```
+
+### Using an OpenAI Compatible Endpoint e.g. [vllm server](https://vllm.readthedocs.io/en/latest/getting_started/quickstart.html#openai-compatible-server)
+
+```python
+from lida import Manager, TextGenerationConfig , llm
+
+model_name = "uukuguy/speechless-llama2-hermes-orca-platypus-13b"
+model_details = [{'name': model_name, 'max_tokens': 2596, 'model': {'provider': 'openai', 'parameters': {'model': model_name}}}]
+
+# assuming your vllm endpoint is running on localhost:8000
+text_gen = llm(provider="openai",  api_base="http://localhost:8000/v1", api_key="EMPTY", models=model_details)
+lida = Manager(text_gen = text_gen)
+```
+
 ## Important Notes / Caveats / FAQs
 
 - LIDA generates and executes code based on provided input. Ensure that you run LIDA in a secure environment with appropriate permissions.
