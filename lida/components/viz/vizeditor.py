@@ -4,7 +4,7 @@ from lida.datamodel import Goal, Summary
 
 
 system_prompt = """
-You are a high skilled visualization assistant that can modify a provided visualization code based on a set of instructions. Your modification should ONLY UPDATE the content of the plot(data) function/method in the code. You MUST return a full program. DO NOT include any preamble text. Do not include explanations or prose.
+You are a high skilled visualization assistant that can modify a provided visualization code based on a set of instructions. You MUST return a full program. DO NOT include any preamble text. Do not include explanations or prose.
 """
 
 
@@ -36,8 +36,8 @@ class VizEditor(object):
             {
                 "role": "system", "content": system_prompt}, {
                 "role": "system", "content": f"The dataset summary is : \n\n {summary} \n\n"}, {
-                "role": "system", "content": f"The code to be modified is: \n\n{code} \n\n. THE CODE YOU GENERATE MUST BE CORRECT (e.g. ensure the right methods for fig and axes are used.)  based on the '{library}' library and also follow these instructions instructions \n\n{library_instructions} \n\n. The resulting code MUST use the following template {library_template}"}, {
-                    "role": "user", "content": f"ALL ADDITIONAL LIBRARIES USED MUST BE IMPORTED.\n YOU MUST THINK STEP BY STEP, AND CAREFULLY MODIFY THE CODE above TO MEET EACH OF THE FOLLOWING INSTRUCTIONS: \n\n {instruction_string} \n\n. The completed modified code THAT FOLLOWS THE TEMPLATE is below. \n"}]
+                "role": "system", "content": f"The modifications you make MUST BE CORRECT and  based on the '{library}' library and also follow these instructions instructions \n\n{library_instructions} \n\n. The resulting code MUST use the following template \n\n {library_template} \n\n "}, {
+                    "role": "user", "content": f"ALL ADDITIONAL LIBRARIES USED MUST BE IMPORTED.\n The code to be modified is: \n\n{code} \n\n. YOU MUST THINK STEP BY STEP, AND CAREFULLY MODIFY ONLY the content of the plot(..) method TO MEET EACH OF THE FOLLOWING INSTRUCTIONS: \n\n {instruction_string} \n\n. The completed modified code THAT FOLLOWS THE TEMPLATE above is. \n"}]
 
         completions: TextGenerationResponse = text_gen.generate(
             messages=messages, config=textgen_config)
