@@ -145,7 +145,7 @@ infographics = lida.infographics(visualization = charts[0].raster, n=3, style_pr
 
 LIDA uses the [llmx](https://github.com/victordibia/llmx) library as its interface for text generation. llmx supports multiple local models including HuggingFace models. You can use the huggingface models directly (assuming you have a gpu) or connect to an openai compatible local model endpoint e.g. using the excellent [vllm](https://vllm.readthedocs.io/en/latest/) library.
 
-### Using HuggingFace Models Directly
+#### Using HuggingFace Models Directly
 
 ```python
 from lida import llm
@@ -155,7 +155,7 @@ lida = Manager(llm=text_gen)
 sumamry = lida.summarize("data/cars.csv") # ....
 ```
 
-### Using an OpenAI Compatible Endpoint e.g. [vllm server](https://vllm.readthedocs.io/en/latest/getting_started/quickstart.html#openai-compatible-server)
+#### Using an OpenAI Compatible Endpoint e.g. [vllm server](https://vllm.readthedocs.io/en/latest/getting_started/quickstart.html#openai-compatible-server)
 
 ```python
 from lida import Manager, TextGenerationConfig , llm
