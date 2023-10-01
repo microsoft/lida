@@ -206,6 +206,16 @@ class ChartExecutorResponse:
 
 
 @dataclass
+class SummaryUrlRequest:
+    """A request for generating a summary with file url"""
+
+    url: str
+    textgen_config: Optional[TextGenerationConfig] = field(
+        default_factory=TextGenerationConfig
+    )
+
+
+@dataclass
 class InfographicsRequest:
     """A request for infographics generation"""
 

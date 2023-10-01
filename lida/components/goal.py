@@ -5,19 +5,18 @@ from llmx import TextGenerator
 from lida.datamodel import Goal, TextGenerationConfig, Persona
 
 
-system_prompt = """You are a an experienced data analyst who can generate a given number of insightful GOALS about data, when given a summary of the data, and a specified persona. The VISUALIZATIONS YOU RECOMMEND MUST FOLLOW VISUALIZATION BEST PRACTICES (e.g., must use bar charts instead of pie charts for comparing quantities) AND BE MEANINGFUL (e.g., plot longitude and latitude on maps where appropriate). They must also be relevant to the specified persona. The goal must include a question, a visualization (THE VISUALIZATION MUST REFERENCE THE ACTUAL COLUMN FIELDS FROM THE SUMMARY), and a rationale (justification of what we will learn from the visualization). The GOALS that you recommend must mention the exact fields from the dataset summary above.
-
+SYSTEM_INSTRUCTIONS = """
+You are a an experienced data analyst who can generate a given number of insightful GOALS about data, when given a summary of the data, and a specified persona. The VISUALIZATIONS YOU RECOMMEND MUST FOLLOW VISUALIZATION BEST PRACTICES (e.g., must use bar charts instead of pie charts for comparing quantities) AND BE MEANINGFUL (e.g., plot longitude and latitude on maps where appropriate). They must also be relevant to the specified persona. Each goal must include a question, a visualization (THE VISUALIZATION MUST REFERENCE THE EXACT COLUMN FIELDS FROM THE SUMMARY), and a rationale (JUSTIFICATION FOR WHICH dataset FIELDS ARE USED and what we will learn from the visualization). Each goal MUST mention the exact fields from the dataset summary above
 """
 
-format_instructions = """
-
-THE OUTPUT MUST BE A VALID LIST OF JSON OBJECTS. IT MUST USE THE FOLLOWING FORMAT:
+FORMAT_INSTRUCTIONS = """
+THE OUTPUT MUST BE A CODE SNIPPET OF A VALID LIST OF JSON OBJECTS. IT MUST USE THE FOLLOWING FORMAT:
 
 ```[
     { "index": 0,  "question": "What is the distribution of X", "visualization": "histogram of X", "rationale": "This tells about "} ..
     ]
 ```
-THE OUTPUT SHOULD NOT BE MARKDOWN. IT SHOULD ONLY USE THE JSON FORMAT ABOVE AND START WITH A SQUARE BRACKET.
+THE OUTPUT SHOULD ONLY USE THE JSON FORMAT ABOVE.
 """
 
 logger = logging.getLogger("lida")
@@ -41,13 +40,13 @@ class GoalExplorer():
                 persona="A highly skilled data analyst who can come up with complex, insightful goals about data",
                 rationale="")
 
-        user_prompt += f"""\n The generated goals SHOULD BE FOCUSED ON THE INTERESTS AND PERSPECTIVE of a '{persona.persona}, who is insterested in complex, insightful goals about the data' persona. \n"""
+        user_prompt += f"""\n The generated goals SHOULD BE FOCUSED ON THE INTERESTS AND PERSPECTIVE of a '{persona.persona} persona, who is insterested in complex, insightful goals about the data. \n"""
 
         messages = [
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": SYSTEM_INSTRUCTIONS},
             {"role": "assistant",
              "content":
-             f"{user_prompt}\n\n {format_instructions} \n\n. The generated {n} goals are \n\n "}]
+             f"{user_prompt}\n\n {FORMAT_INSTRUCTIONS} \n\n. The generated {n} goals are: \n "}]
 
         result: list[Goal] = text_gen.generate(messages=messages, config=textgen_config)
 

@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import traceback
 
 from llmx import llm, providers
-from ..datamodel import GoalWebRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRecommendRequest, VisualizeRepairWebRequest, VisualizeWebRequest, InfographicsRequest
+from ..datamodel import GoalWebRequest, SummaryUrlRequest, TextGenerationConfig, UploadUrl, VisualizeEditWebRequest, VisualizeEvalWebRequest, VisualizeExplainWebRequest, VisualizeRecommendRequest, VisualizeRepairWebRequest, VisualizeWebRequest, InfographicsRequest
 from ..components import Manager
 
 
@@ -259,9 +259,11 @@ async def upload_file(file: UploadFile):
 
 # upload via url
 @api.post("/summarize/url")
-async def upload_file_via_url(payload: UploadUrl) -> dict:
+async def upload_file_via_url(req: SummaryUrlRequest) -> dict:
     """ Upload a file from a url and return a summary of the data """
-    url = payload.url
+    url = req.url
+    textgen_config = req.textgen_config if req.textgen_config else TextGenerationConfig(
+        n=1, temperature=0)
     file_name = url.split("/")[-1]
     file_location = os.path.join(data_folder, file_name)
 
@@ -269,7 +271,7 @@ async def upload_file_via_url(payload: UploadUrl) -> dict:
     url_response = requests.get(url, allow_redirects=True, timeout=1000)
     open(file_location, "wb").write(url_response.content)
     try:
-        textgen_config = TextGenerationConfig(n=1, temperature=0)
+
         summary = lida.summarize(
             data=file_location,
             file_name=file_name,
