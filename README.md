@@ -55,6 +55,13 @@ export OPENAI_API_KEY=<your key>
 
 Alternatively you can install the library in dev model by cloning this repo and running `pip install -e .` in the repository root.
 
+## Building Web UI with Docker
+LIDA as a web UI that can be setup by running the command below
+
+```bash
+OPENAI_API_KEY=<your key> docker-compose up 
+```
+
 ## Web API and UI
 
 LIDA comes with an optional bundled ui and web api that you can explore by running the following command:
