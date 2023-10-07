@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  web: 
+    image: web-ui
+    build: 
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    
