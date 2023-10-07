@@ -5,9 +5,6 @@ FROM python:3.10-slim
 ENV PTYTHONDONTWRITEBYTECODE 1
 ENV PYTHONBUFFERED 1
 
-# Add open api key to the env
-ENV OPENAI_API_KEY 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
-
 # Set the working directory in the container 
 WORKDIR /app
 
