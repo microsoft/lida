@@ -1,30 +1,45 @@
-[tool.poetry]
-name = "lida"
-version = "0.1.0"
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lida" 
+authors = [
+  { name="Victor Dibia", email="victordibia@microsoft.com" },
+]
 description = "LIDA: Automatic Generation of Visualizations from Data"
-authors = ["Victor Dibia <victordibia@microsoft.com>"]
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 
-[tool.poetry.dependencies]
-python = "3.10"
-llmx = "0.0.15-alpha.0"
-pydantic = "2.4.2"
-uvicorn = "0.23.2"
-fastapi = "0.103.2"
-scipy = "1.10.0"
-matplotlib = "3.8.0"
-altair = "5.1.2"
-seaborn = "0.12.0"
-plotly = "5.17.0"
-plotnine = "0.12.3"
-statsmodels = "0.14.0"
-networkx = "3.1"
-geopandas = "0.14.0"
-matplotlib-venn = "0.11.9"
-wordcloud = "1.9.2"
-kaleido = "0.2.1"
-
-[tool.poetry.dev-dependencies]
-# optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]"], tools=["geopy", "basemap", "basemap-data-hires"], infographics=["peacasso"]}
+dependencies = [
+    "llmx",
+    "pydantic",
+    "uvicorn", 
+    "typer",
+    "fastapi", 
+    "python-multipart", 
+     "scipy", 
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "altair", 
+    "seaborn",
+    "plotly", 
+    "plotnine",
+    "statsmodels", 
+    "networkx",
+    "geopandas",
+    "matplotlib-venn",
+    "wordcloud",
+    "kaleido"
+]
+optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]"], tools=["geopy", "basemap", "basemap-data-hires"], infographics=["peacasso"]}
 
 dynamic = ["version"]
 
@@ -49,8 +64,3 @@ namespaces = false
 
 [project.scripts]
 lida = "lida.cli:run"
-
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
