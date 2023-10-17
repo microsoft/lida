@@ -88,7 +88,7 @@ class Summarizer():
 
         return properties_list
 
-    def encrich(self, base_summary: dict, text_gen: TextGenerator,
+    def enrich(self, base_summary: dict, text_gen: TextGenerator,
                 textgen_config: TextGenerationConfig) -> dict:
         """Enrich the data summary with descriptions"""
         logger.info(f"Enriching the data summary with descriptions")
@@ -138,7 +138,7 @@ class Summarizer():
 
         if summary_method == "llm":
             # two stage summarization with llm enrichment
-            data_summary = self.encrich(
+            data_summary = self.enrich(
                 base_summary,
                 text_gen=text_gen,
                 textgen_config=textgen_config)
