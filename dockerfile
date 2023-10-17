@@ -2,17 +2,14 @@
 FROM python:3.10-slim
 
 # Set environment variables 
-ENV PTYTHONDONTWRITEBYTECODE 1
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONBUFFERED 1
 
 # Set the working directory in the container 
 WORKDIR /app
 
-# Install any needed packages 
-RUN pip install --no-cache-dir -r /app/lida 
-
-# Copy the rest of the application code into the container 
-COPY . /app/ 
+# Install requirements
+RUN pip install --no-cache-dir lida
 
 # Expose the port that the application will listen on 
 EXPOSE 8080
