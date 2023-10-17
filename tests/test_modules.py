@@ -1,6 +1,6 @@
 from lida import TextGenerationConfig, llm
 from lida.components import Manager
-
+from lida.chart_util import ChartUtil
 lida = Manager(text_gen=llm("openai"))
 
 
@@ -51,3 +51,8 @@ def test_vizgen():
 
     assert len(charts) > 0
     assert len(charts[0].raster) > 0
+
+    # display charts
+    helper = ChartUtil(charts[0])
+    helper.display_image_with_matplotlib()
+    # helper.save_image('output.png')
