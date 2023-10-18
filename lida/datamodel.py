@@ -1,4 +1,5 @@
 # from dataclasses import dataclass
+import base64
 from dataclasses import field
 from typing import Any, Dict, List, Optional, Union
 
@@ -203,6 +204,14 @@ class ChartExecutorResponse:
             bundle["application/vnd.vegalite.v5+json"] = self.spec
 
         return bundle
+
+    def savefig(self, path):
+        """Save the raster image to a specified path if it exists"""
+        if self.raster:
+            with open(path, 'wb') as f:
+                f.write(base64.b64decode(self.raster))
+        else:
+            raise FileNotFoundError("No raster image to save")
 
 
 @dataclass
