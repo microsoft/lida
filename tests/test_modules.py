@@ -1,6 +1,6 @@
 from lida import TextGenerationConfig, llm
 from lida.components import Manager
-
+import os
 lida = Manager(text_gen=llm("openai"))
 
 
@@ -50,4 +50,21 @@ def test_vizgen():
         library="seaborn")
 
     assert len(charts) > 0
-    assert len(charts[0].raster) > 0
+    first_chart = charts[0]
+
+    # Ensure the first chart has a status of True
+    assert first_chart.status is True
+
+    # Ensure no errors in the first chart
+    assert first_chart.error is None
+
+    # Ensure the raster image of the first chart exists
+    assert len(first_chart.raster) > 0
+
+    # Test saving the raster image of the first chart
+    temp_file_path = "temp_image.png"
+    first_chart.savefig(temp_file_path)
+    # Ensure the image is saved correctly
+    assert os.path.exists(temp_file_path)
+    # Clean up
+    os.remove(temp_file_path)
