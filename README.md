@@ -67,6 +67,14 @@ Then navigate to http://localhost:8080/ in your browser. To view the web api spe
 
 The fastest and recommended way to get started after installation will be to try out the web ui above or run the [tutorial notebook](notebooks/tutorial.ipynb).
 
+## Building the Web API and UI with Docker
+
+The LIDA web api and ui can be setup using docker and the command below (ensure that you have docker installed, and you have set your `OPENAI_API_KEY` environment variable).
+
+```bash
+docker compose up
+```
+
 ### Data Summarization
 
 Given a dataset, generate a compact summary of the data.
