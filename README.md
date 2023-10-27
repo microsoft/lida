@@ -2,6 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/lida.svg)](https://badge.fury.io/py/lida)
 [![arXiv](https://img.shields.io/badge/arXiv-2303.02927-<COLOR>.svg)](https://arxiv.org/abs/2303.02927)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/lida?label=pypi%20downloads)
+
 <a target="_blank" href="https://colab.research.google.com/github/microsoft/lida/blob/main/notebooks/tutorial.ipynb">
 <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
@@ -187,6 +189,10 @@ lida = Manager(text_gen = text_gen)
 - How is LIDA related to OpenAI Code Interpreter: LIDA shares several similarities with code interpreter in the sense that both involve writing and executing code to address user intent. LIDA differs in its focus on visualization, providing a modular api for developer reuse and providing evaluation metrics on the visualization use case.
 
 Naturally, some of the limitations above could be addressed by a much welcomed PR.
+
+## Community Examples Built with LIDA
+
+- LIDA + Streamlit: [lida-streamlit](https://github.com/lida-project/lida-streamlit),
 
 ## Documentation and Citation
 
