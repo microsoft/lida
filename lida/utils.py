@@ -56,13 +56,13 @@ def read_dataframe(file_location):
     elif file_extension == "tsv":
         df = pd.read_csv(file_location, sep="\t")
     else:
-        raise ValueError('Unsupported file type')
+        raise ValueError(f'Unsupported file type - {file_extension}')
 
     # clean column names and check if they have changed
     cleaned_df = clean_column_names(df)
     if cleaned_df.columns.tolist() != df.columns.tolist() or len(df) > 4500:
         if len(df) > 4500:
-            logger.info(f"Dataframe has more than 4500 rows. We will sample 4500 rows.")
+            logger.info("Dataframe has more than 4500 rows. We will sample 4500 rows.")
             cleaned_df = cleaned_df.sample(4500)
         # write the cleaned DataFrame to the original file on disk
         if file_extension == 'csv':
@@ -74,7 +74,7 @@ def read_dataframe(file_location):
         elif file_extension == 'feather':
             cleaned_df.to_feather(file_location, index=False)
         elif file_extension == 'json':
-            with open(file_location, 'w') as f:
+            with open(file_location, 'w', encoding='utf-8') as f:
                 f.write(cleaned_df.to_json(orient='records'))
         else:
             raise ValueError('Unsupported file type')
