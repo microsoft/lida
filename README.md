@@ -192,7 +192,8 @@ Naturally, some of the limitations above could be addressed by a much welcomed P
 
 ## Community Examples Built with LIDA
 
-- LIDA + Streamlit: [lida-streamlit](https://github.com/lida-project/lida-streamlit),
+- LIDA + Streamlit
+  - [lida-streamlit](https://github.com/lida-project/lida-streamlit): shows how to build a streamlit app using the lida api's
 
 ## Documentation and Citation
 

@@ -129,9 +129,9 @@ class ChartExecutor:
                         )
                     )
                 except Exception as exception_error:
-                    print(code_spec_copy, "\n===========\n")
-                    print(exception_error)
-                    print(traceback.format_exc())
+                    # print(code_spec_copy, "\n===========\n")
+                    # print(exception_error)
+                    # print(traceback.format_exc())
                     if return_error:
                         charts.append(
                             ChartExecutorResponse(
@@ -180,8 +180,8 @@ class ChartExecutor:
                         )
                     )
                 except Exception as exception_error:
-                    print(code_spec_copy[0])
-                    print("****\n", str(exception_error))
+                    # print(code_spec_copy[0])
+                    # print("****\n", str(exception_error))
                     # print(traceback.format_exc())
                     if return_error:
                         charts.append(
