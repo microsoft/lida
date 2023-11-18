@@ -58,7 +58,8 @@ class Manager(object):
         """
         if config.provider is None:
             config.provider = self.text_gen.provider or "openai"
-            logger.info("Provider is not set, using default provider - %s", config.provider)
+            logger.info(
+                "Provider is not set, using default provider - %s", config.provider)
             return
 
         if self.text_gen.provider != config.provider:
@@ -75,7 +76,8 @@ class Manager(object):
         file_name="",
         n_samples: int = 3,
         summary_method: str = "default",
-        textgen_config: TextGenerationConfig = TextGenerationConfig(n=1, temperature=0),
+        textgen_config: TextGenerationConfig = TextGenerationConfig(
+            n=1, temperature=0),
     ) -> Summary:
         """
         Summarize data given a DataFrame or file path.
@@ -312,8 +314,7 @@ class Manager(object):
     def explain(
         self,
         code,
-        textgen_config: TextGenerationConfig = TextGenerationConfig(),
-        library: str = "seaborn",
+        textgen_config: TextGenerationConfig = TextGenerationConfig()
     ):
         """Explain a visualization code given a set of instructions
 
@@ -329,7 +330,6 @@ class Manager(object):
             code=code,
             textgen_config=textgen_config,
             text_gen=self.text_gen,
-            library=library,
         )
 
     def evaluate(
