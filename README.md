@@ -160,9 +160,9 @@ LIDA uses the [llmx](https://github.com/victordibia/llmx) library as its interfa
 ```python
 from lida import llm
 text_gen = llm(provider="hf", model="uukuguy/speechless-llama2-hermes-orca-platypus-13b", device_map="auto")
-lida = Manager(llm=text_gen)
+lida = Manager(text_gen=text_gen)
 # now you can call lida methods as above e.g.
-sumamry = lida.summarize("data/cars.csv") # ....
+summary = lida.summarize("data/cars.csv") # ....
 ```
 
 #### Using an OpenAI Compatible Endpoint e.g. [vllm server](https://vllm.readthedocs.io/en/latest/getting_started/quickstart.html#openai-compatible-server)
