@@ -1,4 +1,4 @@
-Certainly! Below is the updated table with GitHub Flavored Markdown compatibility and the use of emoji where necessary:
+This README provides an overview of the current capabilities of LIDA.
 
 ### Core Capabilities
 
@@ -21,17 +21,17 @@ These are the fundamental features that form the primary functionality of LIDA r
 
 These features support the core capabilities and provide additional utility and flexibility.
 
-| Other Feature                 | Description                                                                   | Status | Notes                                                 |
-| ----------------------------- | ----------------------------------------------------------------------------- | ------ | ----------------------------------------------------- |
-| Grammar-Agnostic              | Works with any programming language and visualization library.                | ✅     |                                                       |
-| Multi-LLM Support             | Compatible with various large language models like OpenAI, Azure OpenAI, etc. | ✅     |                                                       |
-| Python API                    | Provides a Python-based API for generating visualizations & infographics.     | ✅     | Requires Python 3.10 or higher.                       |
-| Web API & UI                  | Optional user interface and web API included for exploration.                 | ✅     | Setup via Docker; accessible via localhost.           |
-| Docker Support                | Can be set up and run using Docker.                                           | ✅     | Facilitates deployment and containerization.          |
-| HuggingFace Model Integration | Supports using HuggingFace models for text generation.                        | ✅     | User can opt for direct use or via a local endpoint.  |
-| Security Note                 | Generates and executes code; should be run in a secure environment.           | ⚠️     | Proper permissions management is crucial.             |
-| Community Expansion           | Encourages community contributions and extensions of the tool.                | ✅     | Examples available, e.g., lida-streamlit.             |
-| Documentation & Citation      | Well-documented with available academic paper citation.                       | ✅     | Provides theoretical background and use case details. |
+| Other Feature                 | Description                                                                            | Status | Notes                                                 |
+| ----------------------------- | -------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------- |
+| Grammar-Agnostic              | Works with any programming language and visualization library.                         | ✅     |                                                       |
+| Multi-LLM Provider Support    | Compatible with various large language model providers like OpenAI, Azure OpenAI, etc. | ✅     |                                                       |
+| Python API                    | Provides a Python-based API for generating visualizations & infographics.              | ✅     | Requires Python 3.10 or higher.                       |
+| Web API & UI                  | Optional user interface and web API included for exploration.                          | ✅     | Setup via Docker; accessible via localhost.           |
+| Docker Support                | Can be set up and run using Docker.                                                    | ✅     | Facilitates deployment and containerization.          |
+| HuggingFace Model Integration | Supports using HuggingFace models for text generation.                                 | ✅     | User can opt for direct use or via a local endpoint.  |
+| Security Note                 | Generates and executes code; should be run in a secure environment.                    | ⚠️     | Proper permissions management is crucial.             |
+| Community Expansion           | Encourages community contributions and extensions of the tool.                         | ✅     | Examples available, e.g., lida-streamlit.             |
+| Documentation & Citation      | Well-documented with available academic paper citation.                                | ✅     | Provides theoretical background and use case details. |
 
 Symbols used:
 
