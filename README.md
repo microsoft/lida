@@ -158,9 +158,14 @@ LIDA uses the [llmx](https://github.com/victordibia/llmx) library as its interfa
 #### Using HuggingFace Models Directly
 
 ```python
-from lida import llm
-text_gen = llm(provider="hf", model="uukuguy/speechless-llama2-hermes-orca-platypus-13b", device_map="auto")
-lida = Manager(llm=text_gen)
+!pip3 install --upgrade llmx==0.0.17a0 
+
+# Restart the colab session
+
+from lida import Manager
+from llmx import  llm
+text_gen = llm(provider="hf", model="uukuguy/speechless-llama2-hermes-orca-platypus-13b", device_map="auto") 
+lida = Manager(text_gen=text_gen)
 # now you can call lida methods as above e.g.
 sumamry = lida.summarize("data/cars.csv") # ....
 ```
