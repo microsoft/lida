@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "llmx>=0.0.18a",
+    "llmx>=0.0.20a",
     "pydantic",
     "uvicorn", 
     "typer",
