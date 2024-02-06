@@ -1,5 +1,5 @@
-from lida import TextGenerationConfig, llm
 from lida.components import Manager
+from llmx import llm, TextGenerationConfig
 import os
 lida = Manager(text_gen=llm("openai"))
 
@@ -8,7 +8,8 @@ cars_data_url = "https://raw.githubusercontent.com/uwdata/draco/master/data/cars
 
 
 def test_summarizer():
-    textgen_config = TextGenerationConfig(n=1, temperature=0, use_cache=False, max_tokens=None)
+    textgen_config = TextGenerationConfig(
+        n=1, temperature=0, use_cache=False, max_tokens=None)
     summary_no_enrich = lida.summarize(
         cars_data_url,
         textgen_config=textgen_config,
@@ -22,7 +23,8 @@ def test_summarizer():
 
 
 def test_goals():
-    textgen_config = TextGenerationConfig(n=1, temperature=0.1, use_cache=False, max_tokens=None)
+    textgen_config = TextGenerationConfig(
+        n=1, temperature=0.1, use_cache=False, max_tokens=None)
     summary = lida.summarize(
         cars_data_url,
         textgen_config=textgen_config, summary_method="default")

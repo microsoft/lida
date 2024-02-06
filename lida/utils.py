@@ -1,7 +1,7 @@
 import base64
 import json
 import logging
-from typing import Any, List, Union
+from typing import Any, List, Tuple, Union
 import os
 import io
 import numpy as np
@@ -11,8 +11,7 @@ import matplotlib.pyplot as plt
 import tiktoken
 from diskcache import Cache
 import hashlib
-from PIL import Image
-
+import io
 
 logger = logging.getLogger("lida")
 
@@ -21,63 +20,86 @@ def get_dirs(path: str) -> List[str]:
     return next(os.walk(path))[1]
 
 
-def clean_column_names(df):
-    # create a copy of the dataframe to avoid modifying the original data
+def clean_column_name(col_name: str) -> str:
+    """
+    Clean a single column name by replacing special characters and spaces with underscores.
+
+    :param col_name: The name of the column to be cleaned.
+    :return: A sanitized string valid as a column name.
+    """
+    return re.sub(r'[^0-9a-zA-Z_]', '_', col_name)
+
+
+def clean_column_names(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Clean all column names in the given DataFrame.
+
+    :param df: The DataFrame with possibly dirty column names.
+    :return: A copy of the DataFrame with clean column names.
+    """
     cleaned_df = df.copy()
-
-    # iterate over column names in the dataframe
-    for col in cleaned_df.columns:
-        # check if column name contains any special characters or spaces
-        if re.search('[^0-9a-zA-Z_]', col):
-            # replace special characters and spaces with underscores
-            new_col = re.sub('[^0-9a-zA-Z_]', '_', col)
-            # rename the column in the cleaned dataframe
-            cleaned_df.rename(columns={col: new_col}, inplace=True)
-
-    # return the cleaned dataframe
+    cleaned_df.columns = [clean_column_name(col) for col in cleaned_df.columns]
     return cleaned_df
 
 
-def read_dataframe(file_location):
+def read_dataframe(file_location: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    """
+    Read a dataframe from a given file location and clean its column names.
+    It also samples down to 4500 rows if the data exceeds that limit.
+
+    :param file_location: The path to the file containing the data.
+    :param encoding: Encoding to use for the file reading.
+    :return: A cleaned DataFrame.
+    """
     file_extension = file_location.split('.')[-1]
-    if file_extension == 'json':
-        try:
-            df = pd.read_json(file_location, orient='records')
-        except ValueError:
-            df = pd.read_json(file_location, orient='table')
-    elif file_extension == 'csv':
-        df = pd.read_csv(file_location)
-    elif file_extension in ['xls', 'xlsx']:
-        df = pd.read_excel(file_location)
-    elif file_extension == 'parquet':
-        df = pd.read_parquet(file_location)
-    elif file_extension == 'feather':
-        df = pd.read_feather(file_location)
-    elif file_extension == "tsv":
-        df = pd.read_csv(file_location, sep="\t")
-    else:
+
+    read_funcs = {
+        'json': lambda: pd.read_json(file_location, orient='records', encoding=encoding),
+        'csv': lambda: pd.read_csv(file_location, encoding=encoding),
+        'xls': lambda: pd.read_excel(file_location, encoding=encoding),
+        'xlsx': lambda: pd.read_excel(file_location, encoding=encoding),
+        'parquet': pd.read_parquet,
+        'feather': pd.read_feather,
+        'tsv': lambda: pd.read_csv(file_location, sep="\t", encoding=encoding)
+    }
+
+    if file_extension not in read_funcs:
         raise ValueError('Unsupported file type')
 
-    # clean column names and check if they have changed
+    try:
+        df = read_funcs[file_extension]()
+    except Exception as e:
+        logger.error(f"Failed to read file: {file_location}. Error: {e}")
+        raise
+
+    # Clean column names
     cleaned_df = clean_column_names(df)
-    if cleaned_df.columns.tolist() != df.columns.tolist() or len(df) > 4500:
-        if len(df) > 4500:
-            logger.info(f"Dataframe has more than 4500 rows. We will sample 4500 rows.")
-            cleaned_df = cleaned_df.sample(4500)
-        # write the cleaned DataFrame to the original file on disk
-        if file_extension == 'csv':
-            cleaned_df.to_csv(file_location, index=False)
-        elif file_extension in ['xls', 'xlsx']:
-            cleaned_df.to_excel(file_location, index=False)
-        elif file_extension == 'parquet':
-            cleaned_df.to_parquet(file_location, index=False)
-        elif file_extension == 'feather':
-            cleaned_df.to_feather(file_location, index=False)
-        elif file_extension == 'json':
-            with open(file_location, 'w') as f:
-                f.write(cleaned_df.to_json(orient='records'))
-        else:
+
+    # Sample down to 4500 rows if necessary
+    if len(cleaned_df) > 4500:
+        logger.info(
+            "Dataframe has more than 4500 rows. We will sample 4500 rows.")
+        cleaned_df = cleaned_df.sample(4500)
+
+    if cleaned_df.columns.tolist() != df.columns.tolist():
+        write_funcs = {
+            'csv': lambda: cleaned_df.to_csv(file_location, index=False, encoding=encoding),
+            'xls': lambda: cleaned_df.to_excel(file_location, index=False),
+            'xlsx': lambda: cleaned_df.to_excel(file_location, index=False),
+            'parquet': lambda: cleaned_df.to_parquet(file_location, index=False),
+            'feather': lambda: cleaned_df.to_feather(file_location, index=False),
+            'json': lambda: cleaned_df.to_json(file_location, orient='records', index=False, default_handler=str),
+            'tsv': lambda: cleaned_df.to_csv(file_location, index=False, sep='\t', encoding=encoding)
+        }
+
+        if file_extension not in write_funcs:
             raise ValueError('Unsupported file type')
+
+        try:
+            write_funcs[file_extension]()
+        except Exception as e:
+            logger.error(f"Failed to write file: {file_location}. Error: {e}")
+            raise
 
     return cleaned_df
 
@@ -100,7 +122,14 @@ def file_to_df(file_location: str):
     return df
 
 
-def plot_raster(rasters: Union[str, List[str]], figsize: tuple = (10, 10)):
+def plot_raster(rasters: Union[str, List[str]], figsize: Tuple[int, int] = (10, 10)):
+    """
+    Plot a series of base64-encoded raster images in a horizontal layout.
+
+    Args:
+        rasters: A single base64 string or a list of base64-encoded strings representing the images.
+        figsize: A tuple indicating the size of the figure to display.
+    """
     plt.figure(figsize=figsize)
 
     if isinstance(rasters, str):
@@ -108,50 +137,39 @@ def plot_raster(rasters: Union[str, List[str]], figsize: tuple = (10, 10)):
 
     images = []
 
-    # Load images, convert to RGB if needed, and resize to the same height
+    # Find the max height for resizing
     max_height = 0
     for raster in rasters:
         decoded_image = base64.b64decode(raster)
-        image_buffer = io.BytesIO(decoded_image)
-        image = Image.open(image_buffer)
+        image = plt.imread(io.BytesIO(decoded_image), format='PNG')
 
-        # Convert RGBA images to RGB
-        if image.mode == "RGBA":
-            image = image.convert("RGB")
+        max_height = max(max_height, image.shape[0])
 
-        max_height = max(max_height, image.height)
-
+    # Resize images to max_height while preserving the aspect ratio and alpha channel if it exists
     for raster in rasters:
         decoded_image = base64.b64decode(raster)
-        image_buffer = io.BytesIO(decoded_image)
-        image = Image.open(image_buffer)
+        image = plt.imread(io.BytesIO(decoded_image), format='PNG')
 
-        # Convert RGBA images to RGB
-        if image.mode == "RGBA":
-            image = image.convert("RGB")
+        aspect_ratio = image.shape[1] / image.shape[0]
+        new_width = int(max_height * aspect_ratio)
+        image_resized = np.array([np.interp(np.linspace(
+            0, len(row), new_width), np.arange(0, len(row)), row) for row in image])
 
-        # Resize the image to have the same height as max_height while preserving the aspect ratio
-        width = int(image.width * (max_height / image.height))
-        image = image.resize((width, max_height), Image.LANCZOS)
+        if image_resized.shape[2] == 4:  # If RGBA, preserve alpha channel
+            alpha_channel = image_resized[:, :, 3:]
+            # Drop the alpha for visualization
+            image_resized = image_resized[:, :, :3]
+            image_resized = np.clip(image_resized, 0, 1)
+            image_resized = np.concatenate(
+                (image_resized, alpha_channel), axis=2)
 
-        # Convert the image back to numpy array
-        image = np.array(image)
+        images.append(image_resized)
 
-        images.append(image)
-
-    # Concatenate images horizontally and normalize image data
+    # Concatenate images along the width
     concatenated_image = np.concatenate(images, axis=1)
-    if (
-        concatenated_image.dtype == np.float32
-        or concatenated_image.dtype == np.float64
-    ):
-        concatenated_image = np.clip(concatenated_image, 0, 1)
-    else:
-        concatenated_image = np.clip(concatenated_image, 0, 255)
 
     plt.imshow(concatenated_image)
-    plt.axis("off")
-    plt.box(False)
+    plt.axis('off')
     plt.show()
 
 
@@ -164,7 +182,8 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0301"):
     if model == "gpt-3.5-turbo-0301":  # note: future models may deviate from this
         num_tokens = 0
         for message in messages:
-            num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>\n
+            # every message follows <im_start>{role/name}\n{content}<im_end>\n
+            num_tokens += 4
             for key, value in message.items():
                 num_tokens += len(encoding.encode(value))
                 if key == "name":  # if there's a name, the role is omitted
@@ -179,7 +198,8 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0301"):
 def cache_request(cache: Cache, params: Any, values: Any = None) -> Any:
     # Generate a unique key for the request
 
-    key = hashlib.md5(json.dumps(params, sort_keys=True).encode("utf-8")).hexdigest()
+    key = hashlib.md5(json.dumps(
+        params, sort_keys=True).encode("utf-8")).hexdigest()
     # Check if the request is cached
     if key in cache and values is None:
         print("retrieving from cache")

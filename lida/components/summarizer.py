@@ -79,17 +79,19 @@ class Summarizer():
             if "samples" not in properties:
                 non_null_values = df[column][df[column].notnull()].unique()
                 n_samples = min(n_samples, len(non_null_values))
-                samples = pd.Series(non_null_values).sample(n_samples, random_state=42).tolist()
+                samples = pd.Series(non_null_values).sample(
+                    n_samples, random_state=42).tolist()
                 properties["samples"] = samples
             properties["num_unique_values"] = nunique
             properties["semantic_type"] = ""
             properties["description"] = ""
-            properties_list.append({"column": column, "properties": properties})
+            properties_list.append(
+                {"column": column, "properties": properties})
 
         return properties_list
 
     def enrich(self, base_summary: dict, text_gen: TextGenerator,
-                textgen_config: TextGenerationConfig) -> dict:
+               textgen_config: TextGenerationConfig) -> dict:
         """Enrich the data summary with descriptions"""
         logger.info(f"Enriching the data summary with descriptions")
 
@@ -123,7 +125,8 @@ class Summarizer():
         # if data is a file path, read it into a pandas DataFrame, set file_name to the file name
         if isinstance(data, str):
             file_name = data.split("/")[-1]
-            data = read_dataframe(data, encoding=encoding)  # modified to include encoding
+            # modified to include encoding
+            data = read_dataframe(data, encoding=encoding)
         data_properties = self.get_column_properties(data, n_samples)
 
         # default single stage summary construction
