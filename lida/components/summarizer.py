@@ -117,13 +117,13 @@ class Summarizer():
             self, data: Union[pd.DataFrame, str],
             text_gen: TextGenerator, file_name="", n_samples: int = 3,
             textgen_config=TextGenerationConfig(n=1),
-            summary_method: str = "default") -> dict:
+            summary_method: str = "default", encoding: str = 'utf-8') -> dict:
         """Summarize data from a pandas DataFrame or a file location"""
 
         # if data is a file path, read it into a pandas DataFrame, set file_name to the file name
         if isinstance(data, str):
             file_name = data.split("/")[-1]
-            data = read_dataframe(data)
+            data = read_dataframe(data, encoding=encoding)  # modified to include encoding
         data_properties = self.get_column_properties(data, n_samples)
 
         # default single stage summary construction
