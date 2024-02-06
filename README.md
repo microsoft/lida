@@ -18,7 +18,7 @@ LIDA is a library for generating data visualizations and data-faithful infograph
 
 ## Features
 
-![lida components](docs/images/lidamodules.jpg)
+![lida components](https://github.com/microsoft/lida/blob/main/docs/images/lidamodules.jpg?raw=true)
 
 LIDA treats _**visualizations as code**_ and provides a clean api for generating, executing, editing, explaining, evaluating and repairing visualization code.
 
@@ -158,13 +158,13 @@ LIDA uses the [llmx](https://github.com/victordibia/llmx) library as its interfa
 #### Using HuggingFace Models Directly
 
 ```python
-!pip3 install --upgrade llmx==0.0.17a0 
+!pip3 install --upgrade llmx==0.0.17a0
 
 # Restart the colab session
 
 from lida import Manager
 from llmx import  llm
-text_gen = llm(provider="hf", model="uukuguy/speechless-llama2-hermes-orca-platypus-13b", device_map="auto") 
+text_gen = llm(provider="hf", model="uukuguy/speechless-llama2-hermes-orca-platypus-13b", device_map="auto")
 lida = Manager(text_gen=text_gen)
 # now you can call lida methods as above e.g.
 sumamry = lida.summarize("data/cars.csv") # ....
