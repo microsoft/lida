@@ -46,7 +46,13 @@ charts = lida.visualize(summary=summary, goal=goals[0]) # exploratory data analy
 Setup and verify that your python environment is **`python 3.10`** or higher (preferably, use [Conda](https://docs.conda.io/en/main/miniconda.html#installing)). Install the library via pip.
 
 ```bash
-pip install lida
+pip install -U lida 
+```
+
+LIDA depends on `llmx` and `openai`. If you had these libraries installed previously, consider updating them.
+
+```bash
+pip install -U llmx openai
 ```
 
 Once requirements are met, setup your api key. Learn more about setting up keys for other LLM providers [here](https://github.com/victordibia/llmx).
