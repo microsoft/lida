@@ -23,7 +23,7 @@ logger = logging.getLogger("lida")
 
 
 class GoalExplorer():
-    """Generat goals given a summary of data"""
+    """Generate goals given a summary of data"""
 
     def __init__(self) -> None:
         pass
