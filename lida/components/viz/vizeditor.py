@@ -36,7 +36,7 @@ class VizEditor(object):
             {
                 "role": "system", "content": system_prompt}, {
                 "role": "system", "content": f"The dataset summary is : \n\n {summary} \n\n"}, {
-                "role": "system", "content": f"The modifications you make MUST BE CORRECT and  based on the '{library}' library and also follow these instructions instructions \n\n{library_instructions} \n\n. The resulting code MUST use the following template \n\n {library_template} \n\n "}, {
+                "role": "system", "content": f"The modifications you make MUST BE CORRECT and  based on the '{library}' library and also follow these instructions \n\n{library_instructions} \n\n. The resulting code MUST use the following template \n\n {library_template} \n\n "}, {
                     "role": "user", "content": f"ALL ADDITIONAL LIBRARIES USED MUST BE IMPORTED.\n The code to be modified is: \n\n{code} \n\n. YOU MUST THINK STEP BY STEP, AND CAREFULLY MODIFY ONLY the content of the plot(..) method TO MEET EACH OF THE FOLLOWING INSTRUCTIONS: \n\n {instruction_string} \n\n. The completed modified code THAT FOLLOWS THE TEMPLATE above is. \n"}]
 
         completions: TextGenerationResponse = text_gen.generate(

@@ -11,7 +11,7 @@ logger = logging.getLogger("lida")
 
 
 class Infographer():
-    """Generat infographics given a visualization and a summary of data"""
+    """Generate infographics given a visualization and a summary of data"""
 
     def __init__(self, model_config: ModelConfig = None) -> None:
         self.model = None

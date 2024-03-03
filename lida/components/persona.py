@@ -15,7 +15,7 @@ logger = logging.getLogger("lida")
 
 
 class PersonaExplorer():
-    """Generat personas given a summary of data"""
+    """Generate personas given a summary of data"""
 
     def __init__(self) -> None:
         pass
