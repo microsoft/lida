@@ -8,6 +8,12 @@ ENV PYTHONBUFFERED 1
 # Set the working directory in the container 
 WORKDIR /app
 
+# Update and install dependencies
+RUN pip install --upgrade pip
+RUN apt-get update &&\
+    apt-get -y install libgdal-dev &&\
+    apt-get -y install g++
+
 # Install requirements
 RUN pip install --no-cache-dir lida
 
