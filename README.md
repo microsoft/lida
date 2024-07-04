@@ -204,6 +204,7 @@ Naturally, some of the limitations above could be addressed by a much welcomed P
 ## Community Examples Built with LIDA
 
 - LIDA + Streamlit: [lida-streamlit](https://github.com/lida-project/lida-streamlit),
+- LIDA + Gradio: [Insight-Explorer](https://github.com/sawradip/InsightExplorer)
 
 ## Documentation and Citation
 
