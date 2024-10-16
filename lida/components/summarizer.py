@@ -78,9 +78,9 @@ class Summarizer():
             nunique = df[column].nunique()
             if "samples" not in properties:
                 non_null_values = df[column][df[column].notnull()].unique()
-                n_samples = min(n_samples, len(non_null_values))
+                num_samples = min(n_samples, len(non_null_values))
                 samples = pd.Series(non_null_values).sample(
-                    n_samples, random_state=42).tolist()
+                    num_samples, random_state=42).tolist()
                 properties["samples"] = samples
             properties["num_unique_values"] = nunique
             properties["semantic_type"] = ""
