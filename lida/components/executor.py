@@ -20,6 +20,8 @@ def preprocess_code(code: str) -> str:
     code = code.replace("<imports>", "")
     code = code.replace("<stub>", "")
     code = code.replace("<transforms>", "")
+    code = code.replace(" import", "import")
+    code = code.replace(" def", "def")
 
     # remove all text after chart = plot(data)
     if "chart = plot(data)" in code:
