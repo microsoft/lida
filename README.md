@@ -189,6 +189,23 @@ text_gen = llm(provider="openai",  api_base="http://localhost:8000/v1", api_key=
 lida = Manager(text_gen = text_gen)
 ```
 
+## Using LIDA with Custom Text Generation
+
+LIDA uses the [custom_textgen] as its interface for cutom text generation. cutom_textgen supports any models. You can use your custom text generators directly.
+
+```python
+from lida import Manager, CustomTextGenerator
+
+def generate_text(prompt: str) -> str:
+    # Your cutom method for text generation
+    pass
+
+text_gen = CustomTextGenerator(text_generation_function=generate_text)
+lida = Manager(text_gen=text_gen)
+# now you can call lida methods as above e.g.
+sumamry = lida.summarize("data/cars.csv") # ....
+```
+
 ## Important Notes / Caveats / FAQs
 
 - LIDA generates and executes code based on provided input. Ensure that you run LIDA in a secure environment with appropriate permissions.
