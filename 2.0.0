@@ -1,0 +1,5 @@
+Collecting absl-py
+  Using cached absl_py-2.2.2-py3-none-any.whl.metadata (2.6 kB)
+Using cached absl_py-2.2.2-py3-none-any.whl (135 kB)
+Installing collected packages: absl-py
+Successfully installed absl-py-2.2.2

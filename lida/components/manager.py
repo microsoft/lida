@@ -18,6 +18,7 @@ from ..components.goal import GoalExplorer
 from ..components.persona import PersonaExplorer
 from ..components.executor import ChartExecutor
 from ..components.viz import VizGenerator, VizEditor, VizExplainer, VizEvaluator, VizRepairer, VizRecommender
+from ..components.analysis import Analyzer
 
 import lida.web as lida
 
@@ -45,6 +46,7 @@ class Manager(object):
         self.evaluator = VizEvaluator()
         self.repairer = VizRepairer()
         self.recommender = VizRecommender()
+        self.analyzer = Analyzer(text_gen=self.text_gen)
         self.data = None
         self.infographer = None
         self.persona = PersonaExplorer()
@@ -428,3 +430,81 @@ class Manager(object):
             self.infographer = Infographer()
         return self.infographer.generate(
             visualization=visualization, n=n, style_prompt=style_prompt, return_pil=return_pil)
+
+    def analyze(
+        self,
+        chart,
+        summary: Summary = None,
+        query: str = "Analyze this chart and provide insights",
+        textgen_config: TextGenerationConfig = TextGenerationConfig(),
+        context_k: int = 3,
+    ):
+        """
+        Analyze a chart using multimodal RAG.
+
+        Args:
+            chart: Chart to analyze, can be the result of execute()
+            summary (Summary, optional): Data summary. Defaults to None.
+            query (str, optional): User query for analysis focus. Defaults to "Analyze this chart and provide insights".
+            textgen_config (TextGenerationConfig, optional): Text generation config. Defaults to TextGenerationConfig().
+            context_k (int, optional): Number of context documents to retrieve. Defaults to 3.
+
+        Returns:
+            str: Analysis insights generated from the chart using RAG.
+        """
+        self.check_textgen(config=textgen_config)
+        
+        if summary is None and self.data is not None:
+            # If no summary is provided but we have data, try to generate a summary
+            summary_data = self.summarizer.summarize(
+                data=self.data, 
+                text_gen=self.text_gen,
+                textgen_config=textgen_config
+            )
+            summary = summary_data
+
+        # Use the Analyzer component to analyze the chart
+        return self.analyzer.analyze(
+            chart=chart,
+            summary=summary,
+            query=query,
+            textgen_config=textgen_config,
+            context_k=context_k
+        )
+    
+    def ingest_document(self, file_path: str):
+        """
+        Ingest a document into the RAG system for enhanced analysis context.
+        
+        Args:
+            file_path (str): Path to the document file (currently supports PDF)
+            
+        Returns:
+            None
+        """
+        self.analyzer.ingest_document(file_path)
+    
+    def update_knowledge_base(self, source_path: str = None):
+        """
+        Update the knowledge base used for RAG analysis.
+        
+        Args:
+            source_path (str, optional): Path to source directory with documents. Defaults to None.
+            
+        Returns:
+            None
+        """
+        self.analyzer.update_knowledge_base(source_path)
+        
+    def ingest_web_content(self, url: str, content: str):
+        """
+        Ingest web content into the RAG system for enhanced analysis context.
+        
+        Args:
+            url (str): URL of the web content
+            content (str): The web content text
+            
+        Returns:
+            None
+        """
+        self.analyzer.ingest_web_content(url, content)
