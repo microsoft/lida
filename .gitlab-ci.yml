@@ -1,0 +1,29 @@
+image: docker:latest
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+
+services:
+  - name: docker:dind
+    alias: docker
+    command: ["--tls=false"]
+
+stages:
+  - build
+
+before_script:
+  - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+
+build_frontend:
+  stage: build
+  script:
+    - docker build --target frontend -t $CI_REGISTRY_IMAGE/frontend:latest .
+    - docker push $CI_REGISTRY_IMAGE/frontend:latest
+
+build_backend:
+  stage: build
+  script:
+    - docker build --target backend -t $CI_REGISTRY_IMAGE/backend:latest .
+    - docker push $CI_REGISTRY_IMAGE/backend:latest

@@ -1,33 +1,25 @@
 from lida.components import Manager
-from llmx import llm, TextGenerationConfig
+from lida import LiteLLMTextGenerator, TextGenerationConfig
 import os
-lida = Manager(text_gen=llm("openai"))
+
+lida = Manager(text_gen=LiteLLMTextGenerator())
 
 
 cars_data_url = "https://raw.githubusercontent.com/uwdata/draco/master/data/cars.csv"
 
 
 def test_summarizer():
-    textgen_config = TextGenerationConfig(
-        n=1, temperature=0, use_cache=False, max_tokens=None)
-    summary_no_enrich = lida.summarize(
-        cars_data_url,
-        textgen_config=textgen_config,
-        summary_method="default")
-    summary_enrich = lida.summarize(cars_data_url,
-                                    textgen_config=textgen_config, summary_method="llm")
+    textgen_config = TextGenerationConfig(n=1, temperature=0, use_cache=False, max_tokens=None)
+    summary_no_enrich = lida.summarize(cars_data_url, textgen_config=textgen_config, summary_method="default")
+    summary_enrich = lida.summarize(cars_data_url, textgen_config=textgen_config, summary_method="llm")
 
     assert summary_no_enrich != summary_enrich
-    assert "dataset_description" in summary_enrich and len(
-        summary_enrich["dataset_description"]) > 0
+    assert summary_enrich.dataset_description and len(summary_enrich.dataset_description) > 0
 
 
 def test_goals():
-    textgen_config = TextGenerationConfig(
-        n=1, temperature=0.1, use_cache=False, max_tokens=None)
-    summary = lida.summarize(
-        cars_data_url,
-        textgen_config=textgen_config, summary_method="default")
+    textgen_config = TextGenerationConfig(n=1, temperature=0.1, use_cache=False, max_tokens=None)
+    summary = lida.summarize(cars_data_url, textgen_config=textgen_config, summary_method="default")
 
     goals = lida.goals(summary, n=2, textgen_config=textgen_config)
     assert len(goals) == 2
@@ -35,21 +27,11 @@ def test_goals():
 
 
 def test_vizgen():
-    textgen_config = TextGenerationConfig(
-        n=1,
-        temperature=0.1,
-        use_cache=True,
-        max_tokens=None)
-    summary = lida.summarize(
-        cars_data_url,
-        textgen_config=textgen_config, summary_method="default")
+    textgen_config = TextGenerationConfig(n=1, temperature=0.1, use_cache=True, max_tokens=None)
+    summary = lida.summarize(cars_data_url, textgen_config=textgen_config, summary_method="default")
 
     goals = lida.goals(summary, n=2, textgen_config=textgen_config)
-    charts = lida.visualize(
-        summary=summary,
-        goal=goals[0],
-        textgen_config=textgen_config,
-        library="seaborn")
+    charts = lida.visualize(summary=summary, goal=goals[0], textgen_config=textgen_config, library="seaborn")
 
     assert len(charts) > 0
     first_chart = charts[0]

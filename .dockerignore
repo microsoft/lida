@@ -3,3 +3,7 @@ __pycache__
 *.pyo
 *.log
 .git
+.venv
+.uv
+dist
+site

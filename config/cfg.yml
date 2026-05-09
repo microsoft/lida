@@ -1,0 +1,8 @@
+# LiteLLM is the only supported endpoint. Configure the proxy URL, token,
+# and model via environment variables (LITELLM_BASE_URL, LITELLM_API_KEY,
+# LITELLM_MODEL). The values below mirror the in-code defaults.
+model:
+  provider: litellm
+  parameters:
+    base_url: http://localhost:4000
+    model: deepseek-v4-pro

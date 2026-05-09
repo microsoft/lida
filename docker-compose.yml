@@ -1,11 +1,21 @@
-version: '3.8'
 services:
-  web:
-    image: web-ui
+  frontend:
     build:
       context: .
-      dockerfile: Dockerfile
+      target: frontend
     ports:
-      - "8080:8080"
+      - "8080:80"
+    depends_on:
+      - lida-backend
+
+  lida-backend:
+    build:
+      context: .
+      target: backend
+    ports:
+      - "8000:8080"
+    env_file: .env
     environment:
-      - OPENAI_API_KEY
+      - LLMX_CONFIG_PATH=/config/cfg.yml
+    volumes:
+      - ./config:/config

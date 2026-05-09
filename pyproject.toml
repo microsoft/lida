@@ -1,66 +1,96 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lida" 
+name = "lida"
+version = "0.0.14"
 authors = [
-  { name="Victor Dibia", email="victordibia@microsoft.com" },
+  { name="Victor Dibia", email="v-dibia@microsoft.com" },
 ]
-description = "LIDA: Automatic Generation of Visualizations from Data"
+description = "A library for generating data visualizations and data-faithful infographics using Large Language Models."
 readme = "README.md"
-license = { file="LICENSE" }
-requires-python = ">=3.9"
+license = "MIT"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
 dependencies = [
-    "llmx>=0.0.21a",
-    "pydantic",
-    "uvicorn", 
-    "typer",
-    "fastapi", 
-    "python-multipart", 
-     "scipy", 
-    "numpy",
-    "pandas",
-    "matplotlib",
-    "altair", 
-    "seaborn",
-    "plotly", 
-    "plotnine",
-    "statsmodels", 
-    "networkx",
+    "altair",
+    "fastapi",
     "geopandas",
+    "kaleido>=0.2.1, !=0.2.1.post1",
     "matplotlib-venn",
+    "matplotlib",
+    "networkx",
+    "numpy",
+    "openai>=1.0",
+    "pandas",
+    "plotly",
+    "plotnine",
+    "pydantic",
+    "python-multipart",
+    "scikit-learn",
+    "scipy", 
+    "seaborn",
+    "statsmodels", 
+    "tiktoken",
+    "typer",
+    "uvicorn",
     "wordcloud",
-    "kaleido>=0.2.1, !=0.2.1.post1"
 ]
-optional-dependencies = {web = ["fastapi", "uvicorn"], transformers = ["llmx[transformers]"], tools=["geopy", "basemap", "basemap-data-hires"], infographics=["peacasso"]}
-
-dynamic = ["version"]
-
-[tool.setuptools]
-include-package-data = true 
-
-[tool.setuptools.dynamic]
-version = {attr = "lida.version.VERSION"}
-readme = {file = ["README.md"]}
-
-[tool.setuptools.packages.find]  
-include = ["lida*"]  
-exclude = ["*.tests*"]  
-namespaces = false  
-
-[tool.setuptools.package-data]
-"lida" = ["*.*"]
 
 [project.urls]
 "Homepage" = "https://github.com/microsoft/lida"
 "Bug Tracker" = "https://github.com/microsoft/lida/issues"
 
+[project.optional-dependencies]
+infographics = ["peacasso"]
+
 [project.scripts]
 lida = "lida.cli:run"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["lida"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.0.2",
+]
+
+[tool.ruff]
+exclude = [
+    ".git",
+    "__pycache__",
+    "node_modules",
+    "build",
+    "dist",
+]
+line-length = 320
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | node_modules
+)/
+'''

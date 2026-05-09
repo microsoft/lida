@@ -1,6 +1,6 @@
 output/
 .vscode
-frontend
+
 notebooks/test.ipynb
 notebooks/experimental/*   
 .azure
